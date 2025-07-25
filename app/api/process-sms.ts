@@ -120,6 +120,7 @@ function parseOrderItems(text: string): POItem[] {
   return items;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function processImageWithOCR(imagePath: string): Promise<string> {
   // In a real implementation, you would use OCR service like:
   // - Google Cloud Vision API
