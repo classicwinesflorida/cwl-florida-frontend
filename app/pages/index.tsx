@@ -366,36 +366,49 @@ export default function POCreator() {
   };
 
   return (
-    <div className="min-h-screen py-4 px-2 md:px-4 bg-gray-100">
-      <div className="max-w-4xl mx-auto bg-white">
-        <div className="rounded-lg shadow-lg p-4 md:p-6">
-          <h1 className="text-xl md:text-2xl font-bold text-gray-400 mb-6 md:mb-8 text-center">
+    <div className="min-h-screen bg-[#F6F7FA] flex flex-col items-center justify-center">
+    <div className="w-full max-w-4xl mx-auto">
+      {/* Top Bar */}
+      <div className="rounded-t-xl bg-[#5B6AC7] py-3 px-4 flex justify-between items-center">
+        <h2 className="text-white text-lg font-semibold text-center flex-1">
+          Customer Dashboard
+        </h2>
+        <span className="text-white text-sm font-medium ml-4">
+          Tech Sierra
+        </span>
+      </div>
+      {/* Main Card */}
+      <div className="bg-white rounded-b-xl shadow-lg flex flex-col">
+        <div className="p-4 md:p-6 flex-1 flex flex-col">
+          <h1 className="text-xl md:text-2xl font-bold text-[#5B6AC7] mb-2 text-center">
             Classic Wines Florida - Invoice Creator
           </h1>
+          <p className="text-[#5B6AC7] text-sm text-center mb-6 md:mb-8 font-medium opacity-80">
+            Powered by Tech Sierra
+          </p>
 
           {!poData && (
             <div className="space-y-6">
-              {" "}
               {/* Input Section */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div className="space-y-4">
-                  <h2 className="text-lg md:text-xl font-semibold text-gray-400 flex items-center">
-                    <FileText className="mr-2" size={20} />
+                  <h2 className="text-lg md:text-xl font-semibold text-[#5B6AC7] flex items-center">
+                    <FileText className="mr-2 text-[#5B6AC7]" size={20} />
                     Paste SMS Text
                   </h2>
                   <textarea
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     placeholder="Paste your SMS text here...&#10;&#10;Example:&#10;Royal Stage 1L: 5&#10;Old Monk 500ml: 10"
-                    className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-600 placeholder-gray-400 text-sm md:text-base"
+                    className="w-full h-32 p-3 border border-[#5B6AC7] rounded-lg focus:ring-2 focus:ring-[#5B6AC7] focus:border-[#5B6AC7] text-[#2B3A67] placeholder-[#5B6AC7] text-sm md:text-base"
                   />
                 </div>
                 <div className="space-y-4">
-                  <h2 className="text-lg md:text-xl font-semibold text-gray-400 flex items-center">
-                    <Upload className="mr-2" size={20} />
+                  <h2 className="text-lg md:text-xl font-semibold text-[#5B6AC7] flex items-center">
+                    <Upload className="mr-2 text-[#5B6AC7]" size={20} />
                     Upload Screenshot
                   </h2>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 md:p-6 text-center">
+                  <div className="border-2 border-dashed border-[#5B6AC7] rounded-lg p-4 md:p-6 text-center">
                     <input
                       type="file"
                       accept="image/*"
@@ -407,8 +420,8 @@ export default function POCreator() {
                       htmlFor="file-upload"
                       className="cursor-pointer flex flex-col items-center"
                     >
-                      <Upload size={40} className="text-gray-400 mb-2" />
-                      <span className="text-sm text-gray-400">
+                      <Upload size={40} className="text-[#5B6AC7] mb-2" />
+                      <span className="text-sm text-[#5B6AC7]">
                         Click to upload screenshot
                       </span>
                     </label>
@@ -426,7 +439,7 @@ export default function POCreator() {
                   disabled={
                     isProcessing || (!inputText.trim() && !selectedFile)
                   }
-                  className="bg-blue-600 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center mx-auto text-sm md:text-base"
+                  className="bg-[#5B6AC7] text-white px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-semibold hover:bg-[#3B4CA7] disabled:bg-[#5B6AC7]/60 disabled:cursor-not-allowed flex items-center mx-auto text-sm md:text-base"
                 >
                   {isProcessing ? (
                     <>
@@ -448,20 +461,20 @@ export default function POCreator() {
           {poData && (
             <div className="space-y-4 sm:space-y-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 pl-2">
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#2B3A67] pl-2">
                   Invoice
                 </h2>
                 <div className="flex space-x-2 w-full sm:w-auto">
                   <button
                     onClick={() => setIsEditing(!isEditing)}
-                    className="flex items-center justify-center px-3 sm:px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 text-sm sm:text-base flex-1 sm:flex-initial"
+                    className="flex items-center justify-center px-3 sm:px-4 py-2 bg-[#5B6AC7] text-white rounded-lg hover:bg-[#3B4CA7] text-sm sm:text-base flex-1 sm:flex-initial"
                   >
                     <Edit3 size={16} className="mr-1 sm:mr-2" />
                     {isEditing ? "View Mode" : "Edit Mode"}
                   </button>
                   <button
                     onClick={resetForm}
-                    className="px-3 sm:px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 text-sm sm:text-base"
+                    className="px-3 sm:px-4 py-2 bg-[#5B6AC7]/60 text-white rounded-lg hover:bg-[#3B4CA7]/60 text-sm sm:text-base"
                   >
                     New PO
                   </button>
@@ -469,18 +482,18 @@ export default function POCreator() {
               </div>
 
               {/* Customer Details */}
-              <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
-                <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-2">
+              <div className="bg-[#F6F7FA] p-3 md:p-4 rounded-lg">
+                <h3 className="text-base md:text-lg font-semibold text-[#2B3A67] mb-2">
                   Customer Details
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                    <label className="block text-sm font-medium text-[#5B6AC7] mb-1">
                       Customer Name
                     </label>
                     {isEditing ? (
                       isLoadingCustomers ? (
-                        <div className="w-full p-2 border border-gray-300 rounded-lg text-sm">
+                        <div className="w-full p-2 border border-[#5B6AC7] rounded-lg text-sm">
                           Loading customers...
                         </div>
                       ) : (
@@ -523,53 +536,27 @@ export default function POCreator() {
                         />
                       )
                     ) : (
-                      <p className="text-gray-800 text-sm md:text-base">
+                      <p className="text-[#2B3A67] text-sm md:text-base">
                         {poData.customerDetails.name || "No customer selected"}
                       </p>
                     )}
                   </div>
-                  {/* <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">
-                      Phone
-                    </label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        value={poData.customerDetails.phone || ""}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                          const updatedPO = {
-                            ...poData,
-                            customerDetails: {
-                              ...poData.customerDetails,
-                              phone: e.target.value,
-                            },
-                          };
-                          setPOData(updatedPO);
-                        }}
-                        className="w-full p-2 border border-gray-300 rounded-lg text-gray-600 text-sm md:text-base"
-                      />
-                    ) : (
-                      <p className="text-gray-800 text-sm md:text-base">
-                        {poData.customerDetails.phone || "N/A"}
-                      </p>
-                    )}
-                  </div> */}
                 </div>
               </div>
 
               {/* Items Section - Mobile Card Layout / Desktop Table */}
-              <div className="bg-white border">
-                <h3 className="text-base md:text-lg font-semibold text-gray-700 p-3 md:p-4 bg-gray-50 border-b">
+              <div className="bg-white border border-[#5B6AC7]/20">
+                <h3 className="text-base md:text-lg font-semibold text-[#2B3A67] p-3 md:p-4 bg-[#F6F7FA] border-b border-[#5B6AC7]/10">
                   Order Items
                 </h3>
 
                 {/* Mobile View - Card Layout */}
                 <div className="block md:hidden">
                   {poData.items.map((item) => (
-                    <div key={item.id} className="border-b last:border-b-0 p-4">
+                    <div key={item.id} className="border-b last:border-b-0 p-4 border-[#5B6AC7]/10">
                       <div className="space-y-3">
                         <div>
-                          <label className="text-xs font-medium text-gray-500 uppercase">
+                          <label className="text-xs font-medium text-[#5B6AC7] uppercase">
                             Product
                           </label>
                           {isEditing ? (
@@ -593,7 +580,7 @@ export default function POCreator() {
                               isLoading={isLoadingItems}
                             />
                           ) : (
-                            <p className="text-gray-900 text-sm">
+                            <p className="text-[#2B3A67] text-sm">
                               {item.product}
                             </p>
                           )}
@@ -601,7 +588,7 @@ export default function POCreator() {
 
                         <div className="grid grid-cols-3 gap-3">
                           <div>
-                            <label className="text-xs font-medium text-gray-500 uppercase">
+                            <label className="text-xs font-medium text-[#5B6AC7] uppercase">
                               Qty
                             </label>
                             {isEditing ? (
@@ -615,18 +602,18 @@ export default function POCreator() {
                                     parseInt(e.target.value) || 0
                                   )
                                 }
-                                className="w-full p-2 border border-gray-300 rounded text-gray-600 text-sm"
+                                className="w-full p-2 border border-[#5B6AC7] rounded text-[#2B3A67] text-sm"
                                 disabled={poData.status === "sent"}
                               />
                             ) : (
-                              <p className="text-gray-900 text-sm">
+                              <p className="text-[#2B3A67] text-sm">
                                 {item.quantity}
                               </p>
                             )}
                           </div>
 
                           <div>
-                            <label className="text-xs font-medium text-gray-500 uppercase">
+                            <label className="text-xs font-medium text-[#5B6AC7] uppercase">
                               Unit Price
                             </label>
                             {isEditing ? (
@@ -641,21 +628,21 @@ export default function POCreator() {
                                     parseFloat(e.target.value) || 0
                                   )
                                 }
-                                className="w-full p-2 border border-gray-300 rounded text-gray-600 text-sm"
+                                className="w-full p-2 border border-[#5B6AC7] rounded text-[#2B3A67] text-sm"
                                 disabled={poData.status === "sent"}
                               />
                             ) : (
-                              <p className="text-gray-900 text-sm">
+                              <p className="text-[#2B3A67] text-sm">
                                 ${(item.unitPrice || 0).toFixed(2)}
                               </p>
                             )}
                           </div>
 
                           <div>
-                            <label className="text-xs font-medium text-gray-500 uppercase">
+                            <label className="text-xs font-medium text-[#5B6AC7] uppercase">
                               Total
                             </label>
-                            <p className="text-gray-900 font-medium text-sm">
+                            <p className="text-[#2B3A67] font-medium text-sm">
                               ${(item.totalPrice || 0).toFixed(2)}
                             </p>
                           </div>
@@ -677,29 +664,29 @@ export default function POCreator() {
                 {/* Desktop View - Table Layout */}
                 <div className="hidden md:block">
                   <div>
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-[#5B6AC7]/20">
+                      <thead className="bg-[#F6F7FA]">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-[#5B6AC7] uppercase tracking-wider">
                             Product
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-[#5B6AC7] uppercase tracking-wider">
                             Quantity
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-[#5B6AC7] uppercase tracking-wider">
                             Unit Price
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-[#5B6AC7] uppercase tracking-wider">
                             Total
                           </th>
                           {isEditing && poData.status !== "sent" && (
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th className="px-4 py-3 text-left text-xs font-medium text-[#5B6AC7] uppercase tracking-wider">
                               Actions
                             </th>
                           )}
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-white divide-y divide-[#5B6AC7]/10">
                         {poData.items.map((item) => (
                           <tr key={item.id}>
                             <td className="max-lg:px-[5px] px-4 py-4 whitespace-nowrap">
@@ -725,7 +712,7 @@ export default function POCreator() {
                                     isLoading={isLoadingItems}
                                   />
                                 ) : (
-                                  <span className="text-gray-900">
+                                  <span className="text-[#2B3A67]">
                                     {item.product}
                                   </span>
                                 )}
@@ -743,11 +730,11 @@ export default function POCreator() {
                                       parseInt(e.target.value) || 0
                                     )
                                   }
-                                  className="w-20 p-2 border border-gray-300 rounded text-gray-600"
+                                  className="w-20 p-2 border border-[#5B6AC7] rounded text-[#2B3A67]"
                                   disabled={poData.status === "sent"}
                                 />
                               ) : (
-                                <span className="text-gray-900">
+                                <span className="text-[#2B3A67]">
                                   {item.quantity}
                                 </span>
                               )}
@@ -765,17 +752,17 @@ export default function POCreator() {
                                       parseFloat(e.target.value) || 0
                                     )
                                   }
-                                  className="w-24 p-2 border border-gray-300 rounded text-gray-600"
+                                  className="w-24 p-2 border border-[#5B6AC7] rounded text-[#2B3A67]"
                                   disabled={poData.status === "sent"}
                                 />
                               ) : (
-                                <span className="text-gray-900">
+                                <span className="text-[#2B3A67]">
                                   ${(item.unitPrice || 0).toFixed(2)}
                                 </span>
                               )}
                             </td>
                             <td className="max-lg:px-[5px] px-4 py-4 whitespace-nowrap">
-                              <span className="text-gray-900 font-medium">
+                              <span className="text-[#2B3A67] font-medium">
                                 ${(item.totalPrice || 0).toFixed(2)}
                               </span>
                             </td>
@@ -797,10 +784,10 @@ export default function POCreator() {
                 </div>
 
                 {isEditing && poData.status !== "sent" && (
-                  <div className="p-3 md:p-4 bg-gray-50 border-t">
+                  <div className="p-3 md:p-4 bg-[#F6F7FA] border-t border-[#5B6AC7]/10">
                     <button
                       onClick={addNewItem}
-                      className="text-blue-600 hover:text-blue-800 font-medium text-sm md:text-base"
+                      className="text-[#5B6AC7] hover:text-[#3B4CA7] font-medium text-sm md:text-base"
                     >
                       + Add New Item
                     </button>
@@ -809,8 +796,8 @@ export default function POCreator() {
               </div>
 
               {/* Total and Actions */}
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-50 p-3 md:p-4 rounded-lg gap-3">
-                <div className="text-lg md:text-xl font-semibold text-gray-800">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-[#F6F7FA] p-3 md:p-4 rounded-lg gap-3">
+                <div className="text-lg md:text-xl font-semibold text-[#2B3A67]">
                   Total Amount: ${poData.totalAmount.toFixed(2)}
                 </div>
                 <div className="flex space-x-4 w-full md:w-auto">
@@ -822,7 +809,7 @@ export default function POCreator() {
                   ) : (
                     <button
                       onClick={finalizePO}
-                      className="flex items-center justify-center px-4 md:px-6 py-2.5 md:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold text-sm md:text-base w-full md:w-auto"
+                      className="flex items-center justify-center px-4 md:px-6 py-2.5 md:py-3 bg-[#5B6AC7] text-white rounded-lg hover:bg-[#3B4CA7] font-semibold text-sm md:text-base w-full md:w-auto"
                     >
                       <Send className="mr-2" size={18} />
                       Finalize & Send PO
@@ -834,6 +821,12 @@ export default function POCreator() {
           )}
         </div>
       </div>
+      {/* Footer with Tech Sierra branding */}
+      {/* Footer */}
+      <footer className="text-center py-4 text-[#5B6AC7] text-sm font-medium opacity-80">
+        Powered by <span className="font-bold">Tech Sierra</span>
+      </footer>
     </div>
-  );
+  </div>
+);
 }
