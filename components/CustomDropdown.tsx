@@ -77,39 +77,39 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`w-full p-2 border border-gray-300 rounded-lg text-left flex items-center justify-between ${
+        className={`w-full p-2 border border-[#00B3CC] rounded-lg text-left flex items-center justify-between ${
           disabled
             ? "bg-gray-100 cursor-not-allowed"
-            : "bg-white hover:border-gray-400"
-        } ${isOpen ? "border-blue-500 ring-1 ring-blue-500" : ""}`}
+            : "bg-white hover:border-[#00B3CC]"
+        } ${isOpen ? "border-[#00B3CC] ring-1 ring-[#00B3CC]" : ""}`}
       >
         <span
-          className={`${value ? "text-gray-900" : "text-gray-500"} truncate`}
+          className={`${value ? "text-[#00B3CC]" : "text-[#00B3CC]/60"} truncate`}
         >
           {value || placeholder}
         </span>
         <ChevronDown
           size={16}
-          className={`text-gray-400 transition-transform ${
+          className={`text-[#00B3CC]/60 transition-transform ${
             isOpen ? "rotate-180" : ""
           }`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-          <div className="p-2 border-b border-gray-200">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-[#00B3CC] rounded-lg shadow-lg">
+          <div className="p-2 border-b border-[#00B3CC]/20">
             <div className="relative">
               <Search
                 size={16}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#00B3CC]/60"
               />
               <input
                 type="text"
                 placeholder="Search items..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                className="w-full pl-9 pr-3 py-2 border border-[#00B3CC] rounded focus:outline-none focus:border-[#00B3CC] text-[#00B3CC] placeholder-[#00B3CC]/60"
                 autoFocus
               />
             </div>
@@ -117,33 +117,30 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
           <div className="max-h-60 overflow-y-auto flex flex-col">
             {isLoading ? (
-              <div className="p-3 text-center text-gray-500">
+              <div className="p-3 text-center text-[#00B3CC]/60">
                 Loading items...
               </div>
             ) : filteredOptions.length === 0 ? (
-              <div className="p-3 text-center text-gray-500">
+              <div className="p-3 text-center text-[#00B3CC]/60">
                 {searchTerm ? "No items found" : "No items available"}
               </div>
             ) : (
-              filteredOptions.map((option: DropdownOption) => {
-                console.log(`filteredOptions: ${filteredOptions.length}`);
-                return (
-                  <button
-                    key={`${option.item_id}-${option.name}`}
-                    onClick={() => handleSelect(option)}
-                    className="w-full text-left p-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 focus:outline-none focus:bg-blue-50"
-                  >
-                    <div className="font-medium text-gray-900">
-                      {option.name}
+              filteredOptions.map((option: DropdownOption) => (
+                <button
+                  key={`${option.item_id}-${option.name}`}
+                  onClick={() => handleSelect(option)}
+                  className="w-full text-left p-3 hover:bg-[#00B3CC]/10 border-b border-[#00B3CC]/10 last:border-b-0 focus:outline-none focus:bg-[#00B3CC]/10"
+                >
+                  <div className="font-medium text-[#00B3CC]">
+                    {option.name}
+                  </div>
+                  {option.rate && (
+                    <div className="text-sm text-[#00B3CC]/70">
+                      ${option.rate.toFixed(2)}
                     </div>
-                    {option.rate && (
-                      <div className="text-sm text-gray-600">
-                        ${option.rate.toFixed(2)}
-                      </div>
-                    )}
-                  </button>
-                );
-              })
+                  )}
+                </button>
+              ))
             )}
           </div>
         </div>
