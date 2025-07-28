@@ -12,7 +12,7 @@ function toTitleCase(str: string): string {
 
 export const dynamic = 'force-dynamic';
 
-export default function SmsPoForm() {
+export default function POCreatorClient() {
   const searchParams = useSearchParams();
   const userName = searchParams.get("user_name");
 

@@ -1,6 +1,4 @@
-// app/pages/po-sms-screenshot/page.tsx
-// import POCreatorClient from "./POCreatorClient";
-import POCreatorClient from "../po-sms-text/POCreatorClient";
+import POCreatorClient from "./POCreatorClient";
 
 export default function Page() {
   return <POCreatorClient />;
