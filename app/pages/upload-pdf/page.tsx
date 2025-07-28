@@ -26,15 +26,12 @@ export default function SmsPoForm() {
 
   return (
     <div className="min-h-screen bg-[#F6F7FA] flex flex-col items-center justify-center">
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto">
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#5B6AC7] py-3 px-4 flex justify-between items-center">
           <h2 className="text-white text-lg font-semibold text-center flex-1">
             Customer Dashboard
           </h2>
-          <span className="text-white text-sm font-medium ml-4">
-            Tech Sierra
-          </span>
         </div>
         {/* Main Card */}
         <div className="bg-white rounded-b-xl shadow-lg flex flex-col">

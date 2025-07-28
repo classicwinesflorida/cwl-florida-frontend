@@ -373,9 +373,6 @@ export default function POCreator() {
           <h2 className="text-white text-lg font-semibold text-center flex-1">
             Customer Dashboard
           </h2>
-          <span className="text-white text-sm font-medium ml-4">
-            Tech Sierra
-          </span>
         </div>
         {/* Main Card */}
         <div className="bg-white rounded-b-xl shadow-lg flex flex-col">
@@ -383,9 +380,6 @@ export default function POCreator() {
             <h1 className="text-xl md:text-2xl font-bold text-[#5B6AC7] mb-2 text-center">
               Classic Wines Florida - Invoice Creator
             </h1>
-            <p className="text-[#5B6AC7] text-sm text-center mb-6 md:mb-8 font-medium opacity-80">
-              Powered by Tech Sierra
-            </p>
 
             {!poData && (
               <div className="space-y-6">
