@@ -64,6 +64,8 @@ function toTitleCase(str: string): string {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+export const dynamic = 'force-dynamic';
+
 export default function POCreator() {
   const searchParams = useSearchParams();
   const userName = searchParams.get("user_name");
