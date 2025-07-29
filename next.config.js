@@ -7,7 +7,7 @@ const nextConfig = {
       {
         source: "/api/go/:path*",
         destination: isProd
-          ? "https://your-backend-service-url/api/:path*" // Use actual BE URL in prod
+          ? "https://cwl-florida-automation-341657293532.us-central1.run.app/api/:path*" // Use actual BE URL in prod
           : "http://localhost:3000/api/:path*",
       },
     ];
