@@ -1,4 +1,4 @@
-import Test from "../app/pages/index";
+import Test from "../app/index";
 
 export default function Home() {
   return (
