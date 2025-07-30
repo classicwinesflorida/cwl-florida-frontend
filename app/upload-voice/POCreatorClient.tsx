@@ -216,6 +216,7 @@ export default function POCreatorClient() {
       const customerMatch = poResponse.zoho_customer_match;
 
       const itemsWithUniqueIds: POItem[] = poResponse.items.map(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (item: any): POItem => ({
           id: generateUniqueId(),
           product: item.item_description || item.zoho_item_name || "",
