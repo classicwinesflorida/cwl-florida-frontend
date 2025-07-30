@@ -87,7 +87,6 @@ export default function POCreatorClient() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoadingCustomers, setIsLoadingCustomers] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -192,7 +191,6 @@ export default function POCreatorClient() {
       return;
     }
     setIsProcessing(true);
-    setError("");
     try {
       const formData = new FormData();
       if (audioFile) {
@@ -215,8 +213,8 @@ export default function POCreatorClient() {
       const poResponse = data.purchase_order;
       const customerMatch = poResponse.zoho_customer_match;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const itemsWithUniqueIds: POItem[] = poResponse.items.map(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (item: any): POItem => ({
           id: generateUniqueId(),
           product: item.item_description || item.zoho_item_name || "",
@@ -244,8 +242,9 @@ export default function POCreatorClient() {
 
       setIsEditing(true);
     } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message);
-      else setError("Unknown error occurred.");
+      // No error state, just alert
+      if (err instanceof Error) alert(err.message);
+      else alert("Unknown error occurred.");
     } finally {
       setIsProcessing(false);
     }
@@ -400,7 +399,6 @@ export default function POCreatorClient() {
     setAudioFile(null);
     setPOData(null);
     setIsEditing(false);
-    setError("");
   };
 
   // --- Top Bar Customer Name Logic ---
@@ -426,9 +424,6 @@ export default function POCreatorClient() {
             <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
               Classic Wines Florida - Invoice Creator
             </h1>
-            {error && (
-              <div className="text-[#EF4444] text-sm mb-4">{error}</div>
-            )}
 
             {/* Voice Upload UI */}
             {!poData && (
