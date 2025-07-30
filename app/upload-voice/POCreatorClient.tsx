@@ -66,17 +66,17 @@ interface DropdownOption {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 function toTitleCase(str: string): string {
-    if (!str) return "";
-    return str.replace(/\w\S*/g, (txt: string) =>
-      txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-    );
-  }
+  if (!str) return "";
+  return str.replace(/\w\S*/g, (txt: string) =>
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function POCreatorClient() {
-    const searchParams = useSearchParams();
-const userName = searchParams.get("user_name");
+  const searchParams = useSearchParams();
+  const userName = searchParams.get("user_name");
   const [inputText, setInputText] = useState<string>("");
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [poData, setPOData] = useState<POData | null>(null);
@@ -255,9 +255,9 @@ const userName = searchParams.get("user_name");
     } catch (error) {
       console.error("Error processing voice:", error);
       if (error instanceof Error) {
-        alert(`Error processing voice data: ${error.message}`);
+        setError(`Error processing voice data: ${error.message}`);
       } else {
-        alert("Error processing voice data: An unknown error occurred.");
+        setError("Error processing voice data: An unknown error occurred.");
       }
     } finally {
       setIsProcessing(false);
@@ -448,16 +448,23 @@ const userName = searchParams.get("user_name");
     setAudioFile(null);
     setPOData(null);
     setIsEditing(false);
+    setError("");
   };
+
+  // --- Top Bar Customer Name Logic ---
+  const customerName =
+    poData?.customerName ||
+    poData?.customerDetails?.name ||
+    userName;
 
   return (
     <div className="min-h-screen bg-[#F6F7FA] flex flex-col items-center justify-center">
       <div className="w-full max-w-4xl mx-auto">
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#00B3CC] py-3 px-4 flex justify-between items-center">
-        <h2 className="text-white text-lg font-semibold text-center flex-1">
-            {userName
-              ? `${toTitleCase(userName)} Dashboard`
+          <h2 className="text-white text-lg font-semibold text-center flex-1">
+            {customerName
+              ? `${toTitleCase(customerName)} Dashboard`
               : "Customer Dashboard"}
           </h2>
         </div>
@@ -467,12 +474,12 @@ const userName = searchParams.get("user_name");
             <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
               Classic Wines Florida - Invoice Creator
             </h1>
-
             {/* Error Message */}
             {error && (
               <div className="text-[#EF4444] text-sm mb-4">{error}</div>
             )}
 
+            {/* Voice Upload UI */}
             {!poData && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 md:gap-6">
@@ -524,7 +531,6 @@ const userName = searchParams.get("user_name");
                     </div>
                   </div>
                 </div>
-
                 <div className="text-center">
                   <button
                     onClick={processVoiceData}
@@ -820,4 +826,3 @@ const userName = searchParams.get("user_name");
     </div>
   );
 }
-
