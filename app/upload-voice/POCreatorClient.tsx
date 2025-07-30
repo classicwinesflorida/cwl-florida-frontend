@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import {
   FileText,
   Edit3,
@@ -63,6 +64,31 @@ interface DropdownOption {
   customer?: Customer;
 }
 
+interface ApiResponseItem {
+  item_description?: string;
+  zoho_item_name?: string;
+  quantity?: number;
+  unit_price?: number;
+  total?: number;
+}
+
+interface ApiResponse {
+  purchase_order: {
+    po_number?: string;
+    customer_name?: string;
+    items: ApiResponseItem[];
+    total_amount?: number;
+    order_date?: string;
+    zoho_customer_match?: {
+      contact_name: string;
+      phone?: string;
+      email?: string;
+      cf_email?: string;
+      contact_id: string;
+    };
+  };
+}
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 function toTitleCase(str: string): string {
@@ -87,7 +113,6 @@ export default function POCreatorClient() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoadingCustomers, setIsLoadingCustomers] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -167,6 +192,7 @@ export default function POCreatorClient() {
       mediaRecorder.start();
       setIsRecording(true);
     } catch (error) {
+      console.error("Recording error:", error);
       alert("Could not start recording. Please ensure microphone access is granted.");
     }
   };
@@ -192,7 +218,6 @@ export default function POCreatorClient() {
       return;
     }
     setIsProcessing(true);
-    setError("");
     try {
       const formData = new FormData();
       if (audioFile) {
@@ -209,15 +234,14 @@ export default function POCreatorClient() {
         const errorText = await response.text();
         throw new Error(`Failed to process voice data: ${response.status} - ${errorText}`);
       }
-      const data = await response.json();
+      const data: ApiResponse = await response.json();
 
       // Map the API response to our POData structure
       const poResponse = data.purchase_order;
       const customerMatch = poResponse.zoho_customer_match;
 
       const itemsWithUniqueIds: POItem[] = poResponse.items.map(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (item: any): POItem => ({
+        (item: ApiResponseItem): POItem => ({
           id: generateUniqueId(),
           product: item.item_description || item.zoho_item_name || "",
           quantity: item.quantity || 1,
@@ -244,8 +268,9 @@ export default function POCreatorClient() {
 
       setIsEditing(true);
     } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message);
-      else setError("Unknown error occurred.");
+      // No error state, just alert
+      if (err instanceof Error) alert(err.message);
+      else alert("Unknown error occurred.");
     } finally {
       setIsProcessing(false);
     }
@@ -400,7 +425,6 @@ export default function POCreatorClient() {
     setAudioFile(null);
     setPOData(null);
     setIsEditing(false);
-    setError("");
   };
 
   // --- Top Bar Customer Name Logic ---
@@ -426,9 +450,6 @@ export default function POCreatorClient() {
             <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
               Classic Wines Florida - Invoice Creator
             </h1>
-            {error && (
-              <div className="text-[#EF4444] text-sm mb-4">{error}</div>
-            )}
 
             {/* Voice Upload UI */}
             {!poData && (
@@ -757,10 +778,12 @@ export default function POCreatorClient() {
         {/* Footer with Tech Sierra branding */}
         <footer className="text-center py-4 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
           Powered by
-          <img
+          <Image
             src="/logo.png"
             alt="Tech Sierra Logo"
-            className="w-12 h-8 object-contain ml-2"
+            width={48}
+            height={32}
+            className="object-contain ml-2"
           />
         </footer>
       </div>
