@@ -140,6 +140,7 @@ export default function POCreatorClient() {
     }
   }, [isEditing]);
 
+  // --- Voice Recording Logic ---
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -166,19 +167,14 @@ export default function POCreatorClient() {
       mediaRecorder.start();
       setIsRecording(true);
     } catch (error) {
-      console.error("Error starting recording:", error);
-      alert(
-        "Could not start recording. Please ensure microphone access is granted."
-      );
+      alert("Could not start recording. Please ensure microphone access is granted.");
     }
   };
 
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream
-        .getTracks()
-        .forEach((track) => track.stop());
+      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
       setIsRecording(false);
     }
   };
@@ -189,14 +185,14 @@ export default function POCreatorClient() {
     }
   };
 
+  // --- Process Voice Data ---
   const processVoiceData = async () => {
     if (!audioFile && !inputText.trim()) {
       alert("Please either record/upload voice or enter text");
       return;
     }
-
     setIsProcessing(true);
-
+    setError("");
     try {
       const formData = new FormData();
       if (audioFile) {
@@ -204,20 +200,15 @@ export default function POCreatorClient() {
       } else {
         formData.append("text", inputText);
       }
-
       const response = await fetch(`${API_BASE_URL}/api/voice`, {
         method: "POST",
         mode: "cors",
         body: formData,
       });
-
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(
-          `Failed to process voice data: ${response.status} - ${errorText}`
-        );
+        throw new Error(`Failed to process voice data: ${response.status} - ${errorText}`);
       }
-
       const data = await response.json();
 
       // Map the API response to our POData structure
@@ -225,7 +216,6 @@ export default function POCreatorClient() {
       const customerMatch = poResponse.zoho_customer_match;
 
       const itemsWithUniqueIds: POItem[] = poResponse.items.map(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (item: any): POItem => ({
           id: generateUniqueId(),
           product: item.item_description || item.zoho_item_name || "",
@@ -252,18 +242,15 @@ export default function POCreatorClient() {
       });
 
       setIsEditing(true);
-    } catch (error) {
-      console.error("Error processing voice:", error);
-      if (error instanceof Error) {
-        setError(`Error processing voice data: ${error.message}`);
-      } else {
-        setError("Error processing voice data: An unknown error occurred.");
-      }
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message);
+      else setError("Unknown error occurred.");
     } finally {
       setIsProcessing(false);
     }
   };
 
+  // --- PO Edit Logic (same as your text page) ---
   const updatePOItem = (
     itemId: string,
     field: keyof POItem,
@@ -271,35 +258,29 @@ export default function POCreatorClient() {
   ) => {
     if (!poData) return;
 
-    const updatedItems = poData?.items?.map((item) => {
+    const updatedItems = poData.items.map((item) => {
       if (item.id === itemId) {
         const updatedItem = { ...item, [field]: value };
-
-        // Calculate total price when quantity or unit price changes
         if (field === "quantity" || field === "unitPrice") {
           updatedItem.totalPrice =
             (Number(updatedItem.quantity) || 0) *
             (Number(updatedItem.unitPrice) || 0);
         }
-
         return updatedItem;
       }
       return item;
     });
 
-    // Recalculate total amount
     const totalAmount = updatedItems.reduce(
       (sum, item) => sum + (item.totalPrice || 0),
       0
     );
 
-    const updatedPO = {
+    setPOData({
       ...poData,
       items: updatedItems,
-      totalAmount: totalAmount,
-    };
-
-    setPOData(updatedPO);
+      totalAmount,
+    });
   };
 
   const handleProductSelect = (itemId: string, selectedZohoItem: ZohoItem) => {
@@ -312,35 +293,28 @@ export default function POCreatorClient() {
           product: selectedZohoItem.name,
           unitPrice: selectedZohoItem.rate || 0,
         };
-
-        // Recalculate total price for this item
         updatedItem.totalPrice =
           (Number(updatedItem.quantity) || 0) *
           (Number(updatedItem.unitPrice) || 0);
-
         return updatedItem;
       }
       return item;
     });
 
-    // Recalculate total amount
     const totalAmount = updatedItems.reduce(
       (sum, item) => sum + (item.totalPrice || 0),
       0
     );
 
-    const updatedPO = {
+    setPOData({
       ...poData,
       items: updatedItems,
-      totalAmount: totalAmount,
-    };
-
-    setPOData(updatedPO);
+      totalAmount,
+    });
   };
 
   const addNewItem = () => {
     if (!poData) return;
-
     const newItem = {
       id: generateUniqueId(),
       product: "",
@@ -348,31 +322,24 @@ export default function POCreatorClient() {
       unitPrice: 0,
       totalPrice: 0,
     };
-
-    const updatedPO = {
+    setPOData({
       ...poData,
       items: [...poData.items, newItem],
-    };
-
-    setPOData(updatedPO);
+    });
   };
 
   const removeItem = (itemId: string) => {
     if (!poData) return;
-
     const updatedItems = poData.items.filter((item) => item.id !== itemId);
     const totalAmount = updatedItems.reduce(
       (sum, item) => sum + (item.totalPrice || 0),
       0
     );
-
-    const updatedPO = {
+    setPOData({
       ...poData,
       items: updatedItems,
-      totalAmount: totalAmount,
-    };
-
-    setPOData(updatedPO);
+      totalAmount,
+    });
   };
 
   const updateCustomerDetail = (customerData: {
@@ -383,37 +350,25 @@ export default function POCreatorClient() {
     contact_id?: string;
   }) => {
     if (!poData) return;
-
-    const updatedPO = {
+    setPOData({
       ...poData,
       customerName: customerData.name,
       customerDetails: {
         ...poData.customerDetails,
-        name: customerData.name,
-        phone: customerData.phone || poData.customerDetails.phone || "",
-        email: customerData.email || poData.customerDetails.email || "",
-        address: customerData.address || poData.customerDetails.address || "",
-        contact_id:
-          customerData.contact_id || poData.customerDetails.contact_id || "",
+        ...customerData,
       },
-    };
-
-    setPOData(updatedPO);
+    });
   };
 
   const finalizePO = async () => {
     if (!poData) return;
-
     try {
       setIsProcessing(true);
-
-      // Add PO reference to notes instead of custom field
       const poDataWithReference = {
         ...poData,
-        notes: `PO Reference: ${poData.id}`, // Add PO reference as a note
-        date: new Date().toISOString().split("T")[0], // Ensure date is in YYYY-MM-DD format
+        notes: `PO Reference: ${poData.id}`,
+        date: new Date().toISOString().split("T")[0],
       };
-
       const response = await fetch(`${API_BASE_URL}/api/finalize-po`, {
         method: "POST",
         mode: "cors",
@@ -422,17 +377,13 @@ export default function POCreatorClient() {
         },
         body: JSON.stringify(poDataWithReference),
       });
-
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || "Failed to finalize PO");
       }
-
       setPOData({ ...poData, status: "sent" });
       alert("PO sent successfully to Zoho Books!");
     } catch (error) {
-      console.error("Error finalizing PO:", error);
       alert(
         error instanceof Error
           ? error.message
@@ -474,7 +425,6 @@ export default function POCreatorClient() {
             <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
               Classic Wines Florida - Invoice Creator
             </h1>
-            {/* Error Message */}
             {error && (
               <div className="text-[#EF4444] text-sm mb-4">{error}</div>
             )}
@@ -557,7 +507,7 @@ export default function POCreatorClient() {
             {poData && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                  <h2 className="text-xl sm:text-2xl font-semibold text-[#2B3A67] pl-2">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-[#00B3CC] pl-2">
                     Invoice
                   </h2>
                   <div className="flex space-x-2 w-full sm:w-auto">
@@ -579,7 +529,7 @@ export default function POCreatorClient() {
 
                 {/* Customer Details */}
                 <div className="bg-[#F6F7FA] p-3 md:p-4 rounded-lg">
-                  <h3 className="text-base md:text-lg font-semibold text-[#2B3A67] mb-2">
+                  <h3 className="text-base md:text-lg font-semibold text-[#00B3CC] mb-2">
                     Customer Details
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
@@ -589,7 +539,7 @@ export default function POCreatorClient() {
                       </label>
                       {isEditing ? (
                         isLoadingCustomers ? (
-                          <div className="w-full p-2 border border-[#00B3CC] rounded-lg text-sm">
+                          <div className="w-full p-2 border border-[#00B3CC] rounded-lg text-sm text-[#00B3CC]">
                             Loading customers...
                           </div>
                         ) : (
@@ -598,10 +548,7 @@ export default function POCreatorClient() {
                               (c: Customer): DropdownOption => ({
                                 item_id: c.contact_id,
                                 name: c.contact_name,
-                                customer: {
-                                  ...c,
-                                  email: c.email || (c as any).cf_email || "",
-                                },
+                                customer: c,
                               })
                             )}
                             value={poData.customerDetails.name}
@@ -613,14 +560,11 @@ export default function POCreatorClient() {
                                     option.customer.phone ||
                                     option.customer.mobile ||
                                     "",
-                                  email:
-                                    option.customer.email ||
-                                    (option.customer as any).cf_email ||
-                                    "",
+                                  email: option.customer.email || "",
                                   address: option.customer.billing_address
                                     ? `${
-                                        option.customer.billing_address
-                                          .address || ""
+                                        option.customer.billing_address.address ||
+                                        ""
                                       }, ${
                                         option.customer.billing_address.city ||
                                         ""
@@ -632,7 +576,6 @@ export default function POCreatorClient() {
                                         ""
                                       }`
                                     : "",
-                                  contact_id: option.customer.contact_id,
                                 });
                               }
                             }}
@@ -641,18 +584,17 @@ export default function POCreatorClient() {
                           />
                         )
                       ) : (
-                        <p className="text-[#2B3A67] text-sm md:text-base">
-                          {poData.customerDetails.name ||
-                            "No customer selected"}
+                        <p className="text-[#00B3CC] text-sm md:text-base">
+                          {poData.customerDetails.name || "No customer selected"}
                         </p>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* Items Section - Table Layout */}
+                {/* Items Section - Mobile Card Layout / Desktop Table */}
                 <div className="bg-white border border-[#00B3CC]/20">
-                  <h3 className="text-base md:text-lg font-semibold text-[#2B3A67] p-3 md:p-4 bg-[#F6F7FA] border-b border-[#00B3CC]/10">
+                  <h3 className="text-base md:text-lg font-semibold text-[#00B3CC] p-3 md:p-4 bg-[#F6F7FA] border-b border-[#00B3CC]/10">
                     Order Items
                   </h3>
                   <div>
@@ -679,7 +621,7 @@ export default function POCreatorClient() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-[#00B3CC]/10">
-                        {poData?.items?.map((item) => (
+                        {poData.items.map((item) => (
                           <tr key={item.id}>
                             <td className="max-lg:px-[5px] px-4 py-4 whitespace-nowrap">
                               <div className="w-full max-w-xs">
@@ -693,9 +635,7 @@ export default function POCreatorClient() {
                                       })
                                     )}
                                     value={item.product}
-                                    onChange={(
-                                      selectedItem: DropdownOption
-                                    ) =>
+                                    onChange={(selectedItem: DropdownOption) =>
                                       handleProductSelect(
                                         item.id,
                                         selectedItem as ZohoItem
@@ -706,7 +646,7 @@ export default function POCreatorClient() {
                                     isLoading={isLoadingItems}
                                   />
                                 ) : (
-                                  <span className="text-[#2B3A67]">
+                                  <span className="text-[#00B3CC]">
                                     {item.product}
                                   </span>
                                 )}
@@ -724,11 +664,11 @@ export default function POCreatorClient() {
                                       parseInt(e.target.value) || 0
                                     )
                                   }
-                                  className="w-20 p-2 border border-[#00B3CC] rounded text-[#2B3A67]"
+                                  className="w-20 p-2 border border-[#00B3CC] rounded text-[#00B3CC]"
                                   disabled={poData.status === "sent"}
                                 />
                               ) : (
-                                <span className="text-[#2B3A67]">
+                                <span className="text-[#00B3CC]">
                                   {item.quantity}
                                 </span>
                               )}
@@ -746,17 +686,17 @@ export default function POCreatorClient() {
                                       parseFloat(e.target.value) || 0
                                     )
                                   }
-                                  className="w-24 p-2 border border-[#00B3CC] rounded text-[#2B3A67]"
+                                  className="w-24 p-2 border border-[#00B3CC] rounded text-[#00B3CC]"
                                   disabled={poData.status === "sent"}
                                 />
                               ) : (
-                                <span className="text-[#2B3A67]">
+                                <span className="text-[#00B3CC]">
                                   ${(item.unitPrice || 0).toFixed(2)}
                                 </span>
                               )}
                             </td>
                             <td className="max-lg:px-[5px] px-4 py-4 whitespace-nowrap">
-                              <span className="text-[#2B3A67] font-medium">
+                              <span className="text-[#00B3CC] font-medium">
                                 ${(item.totalPrice || 0).toFixed(2)}
                               </span>
                             </td>
@@ -764,7 +704,7 @@ export default function POCreatorClient() {
                               <td className="max-lg:px-[5px] px-4 py-4 whitespace-nowrap">
                                 <button
                                   onClick={() => removeItem(item.id)}
-                                  className="text-[#EF4444] hover:text-[#dc2626]"
+                                  className="text-red-600 hover:text-red-800"
                                 >
                                   Remove
                                 </button>
@@ -789,12 +729,12 @@ export default function POCreatorClient() {
 
                 {/* Total and Actions */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-[#F6F7FA] p-3 md:p-4 rounded-lg gap-3">
-                  <div className="text-lg md:text-xl font-semibold text-[#2B3A67]">
-                    Total Amount: ${poData?.totalAmount?.toFixed(2)}
+                  <div className="text-lg md:text-xl font-semibold text-[#00B3CC]">
+                    Total Amount: ${poData.totalAmount.toFixed(2)}
                   </div>
                   <div className="flex space-x-4 w-full md:w-auto">
                     {poData.status === "sent" ? (
-                      <div className="flex items-center text-[#22C55E]">
+                      <div className="flex items-center text-green-600">
                         <CheckCircle className="mr-2" size={20} />
                         PO Sent Successfully
                       </div>
