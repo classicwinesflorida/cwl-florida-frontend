@@ -1,9 +1,9 @@
-import Test from "../app/index";
+import Homepage from "../app/index";
 
 export default function Home() {
   return (
     <div className=" min-h-screen ">
-      <Test />
+      <Homepage />
     </div>
   );
 }
