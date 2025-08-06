@@ -1,12 +1,9 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React from "react";
 import { MessageSquare, Camera, FileText, Mic } from "lucide-react";
 import Header from "@/components/header";
 
 export default function AIPage() {
-  const [activeReader, setActiveReader] = useState(null);
-  const recordingInterval = useRef(null);
-
   const readerOptions = [
     {
       id: "text",
@@ -42,8 +39,8 @@ export default function AIPage() {
     },
   ];
 
-  const handleCardClick = (readerId) => {
-    setActiveReader(readerId);
+  const handleCardClick = () => {
+    console.log("clicked");
   };
 
   return (
@@ -67,7 +64,7 @@ export default function AIPage() {
           {readerOptions.map((option) => (
             <div
               key={option.id}
-              onClick={() => handleCardClick(option.id)}
+              onClick={() => handleCardClick()}
               className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden"
             >
               <div

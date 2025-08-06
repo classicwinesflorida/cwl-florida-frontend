@@ -11,9 +11,18 @@ import {
 import Header from "@/components/header";
 import { useRouter } from "next/navigation";
 
+interface MenuItem {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  url: string;
+  gradient: string;
+  type: "external" | "internal";
+}
+
 export default function Home() {
   const router = useRouter();
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     {
       title: "Go to Zoho Books",
       description: "Access your Zoho Books accounting platform",
@@ -56,7 +65,7 @@ export default function Home() {
     },
   ];
 
-  const handleCardClick = (item) => {
+  const handleCardClick = (item: MenuItem): void => {
     if (item.type === "external") {
       // Open external URLs in new tab
       window.open(item.url, "_blank", "noopener,noreferrer");

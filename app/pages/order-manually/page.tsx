@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   UserPlus,
   Users,
@@ -10,7 +10,6 @@ import {
   List,
   FileText,
   ScrollText,
-  PlusCircle,
 } from "lucide-react";
 import Header from "@/components/header";
 
@@ -23,14 +22,7 @@ interface BookingOption {
   type: "form" | "list";
 }
 
-interface FormData {
-  [key: string]: string;
-}
-
 export default function ManualBookingPage() {
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-  const [formData, setFormData] = useState<FormData>({});
-
   const bookingOptions: BookingOption[] = [
     {
       id: "customer-form",
@@ -99,8 +91,7 @@ export default function ManualBookingPage() {
   ];
 
   const handleCardClick = (sectionId: string): void => {
-    setActiveSection(sectionId);
-    setFormData({});
+    console.log(sectionId);
   };
 
   return (
