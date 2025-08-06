@@ -1,43 +1,56 @@
+"use client";
 import React, { useState, useRef, useEffect } from "react";
-import { BookOpen, ChevronDown, User, LogOut, Settings } from "lucide-react";
-
+import { ChevronDown, User, LogOut } from "lucide-react";
+import Image from "next/image";
 interface User {
   name: string;
   email: string;
-  role: string;
 }
-
-// Removed ClickOutsideEvent interface, use MouseEvent directly
 
 export default function Header() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const modalRef = useRef(null);
-  const buttonRef = useRef(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Mock user data - replace with your actual user data
   const user = {
     name: "Example User",
     email: "example.user@company.com",
-    role: "Administrator",
   };
+  const TechSierraLogo = () => (
+    <div
+      className="w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+      onClick={() => (window.location.href = "/")}
+      title="Go to Home Page"
+    >
+      <Image
+        src="/logo.png"
+        alt="Tech Sierra Logo"
+        width={48}
+        height={32}
+        // className="max-w-full max-h-full object-contain"
+      />
+    </div>
+  );
+
+  // Function to get user initials
 
   const getUserInitials = (name: string): string => {
     return name
       .split(" ")
-      .map((word: string) => word.charAt(0).toUpperCase())
+      .map((word) => word.charAt(0).toUpperCase())
       .join("")
       .slice(0, 2);
   };
 
+  // Close modal when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node | null;
       if (
         modalRef.current &&
-        target &&
-        !(modalRef.current as HTMLElement).contains(target) &&
+        !modalRef.current.contains(event.target as Node) &&
         buttonRef.current &&
-        !(buttonRef.current as HTMLElement).contains(target)
+        !buttonRef.current.contains(event.target as Node)
       ) {
         setIsProfileModalOpen(false);
       }
@@ -68,17 +81,9 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3">
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: "#06A9CA" }}
-            >
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Tech Sierra Dashboard
-            </h1>
+            <TechSierraLogo />
+            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
           </div>
-
           {/* Right side - Notifications and Profile */}
           <div className="flex items-center space-x-4">
             {/* Profile Dropdown */}
@@ -101,7 +106,6 @@ export default function Header() {
                   <div className="text-sm font-medium text-gray-900">
                     {user.name}
                   </div>
-                  <div className="text-xs text-gray-500">{user.role}</div>
                 </div>
 
                 {/* Dropdown Arrow */}
@@ -134,9 +138,6 @@ export default function Header() {
                         <div className="text-sm text-gray-500">
                           {user.email}
                         </div>
-                        <div className="text-xs text-gray-400 mt-1">
-                          {user.role}
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -148,15 +149,7 @@ export default function Header() {
                       className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                     >
                       <User className="w-4 h-4 text-gray-400" />
-                      <span>Profile Settings</span>
-                    </button>
-
-                    <button
-                      onClick={handleProfileSettings}
-                      className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <Settings className="w-4 h-4 text-gray-400" />
-                      <span>Account Settings</span>
+                      <span>Update password</span>
                     </button>
                   </div>
 
