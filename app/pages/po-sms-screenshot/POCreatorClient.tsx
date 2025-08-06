@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Upload, FileText, Edit3, Send, CheckCircle } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 interface POItem {
   id: string;
@@ -57,12 +58,13 @@ interface DropdownOption {
 
 function toTitleCase(str: string): string {
   if (!str) return "";
-  return str.replace(/\w\S*/g, (txt: string) =>
-    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  return str.replace(
+    /\w\S*/g,
+    (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
   );
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -383,7 +385,9 @@ export default function POCreatorClient() {
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#00B3CC] py-3 px-4 flex justify-between items-center">
           <h2 className="text-white text-lg font-semibold text-center flex-1">
-            {userName ? `${toTitleCase(userName)} Dashboard` : "Customer Dashboard"}
+            {userName
+              ? `${toTitleCase(userName)} Dashboard`
+              : "Customer Dashboard"}
           </h2>
         </div>
         {/* Main Card */}
@@ -392,7 +396,7 @@ export default function POCreatorClient() {
             <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
               Classic Wines Florida - Invoice Creator
             </h1>
-  
+
             {!poData && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 md:gap-6">
@@ -449,7 +453,7 @@ export default function POCreatorClient() {
                 </div>
               </div>
             )}
-  
+
             {/* PO Display and Edit Section */}
             {poData && (
               <div className="space-y-4 sm:space-y-6">
@@ -473,7 +477,7 @@ export default function POCreatorClient() {
                     </button>
                   </div>
                 </div>
-  
+
                 {/* Customer Details */}
                 <div className="bg-[#F6F7FA] p-3 md:p-4 rounded-lg">
                   <h3 className="text-base md:text-lg font-semibold text-[#00B3CC] mb-2">
@@ -510,14 +514,17 @@ export default function POCreatorClient() {
                                   email: option.customer.email || "",
                                   address: option.customer.billing_address
                                     ? `${
-                                        option.customer.billing_address.address ||
+                                        option.customer.billing_address
+                                          .address || ""
+                                      }, ${
+                                        option.customer.billing_address.city ||
                                         ""
                                       }, ${
-                                        option.customer.billing_address.city || ""
-                                      }, ${
-                                        option.customer.billing_address.state || ""
+                                        option.customer.billing_address.state ||
+                                        ""
                                       } ${
-                                        option.customer.billing_address.zip || ""
+                                        option.customer.billing_address.zip ||
+                                        ""
                                       }`
                                     : "",
                                 });
@@ -529,13 +536,14 @@ export default function POCreatorClient() {
                         )
                       ) : (
                         <p className="text-[#00B3CC] text-sm md:text-base">
-                          {poData.customerDetails.name || "No customer selected"}
+                          {poData.customerDetails.name ||
+                            "No customer selected"}
                         </p>
                       )}
                     </div>
                   </div>
                 </div>
-  
+
                 {/* Items Section - Table Layout */}
                 <div className="bg-white border border-[#00B3CC]/20">
                   <h3 className="text-base md:text-lg font-semibold text-[#00B3CC] p-3 md:p-4 bg-[#F6F7FA] border-b border-[#00B3CC]/10">
@@ -670,7 +678,7 @@ export default function POCreatorClient() {
                     </div>
                   )}
                 </div>
-  
+
                 {/* Total and Actions */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-[#F6F7FA] p-3 md:p-4 rounded-lg gap-3">
                   <div className="text-lg md:text-xl font-semibold text-[#00B3CC]">
@@ -699,10 +707,11 @@ export default function POCreatorClient() {
         </div>
         {/* Footer with Tech Sierra branding */}
         <footer className="text-center py-4 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
-          Powered by
-          <img
+          <Image
             src="/logo.png"
             alt="Tech Sierra Logo"
+            width={48}
+            height={32}
             className="w-12 h-8 object-contain ml-2"
           />
         </footer>
