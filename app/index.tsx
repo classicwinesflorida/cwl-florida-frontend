@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Header from "@/components/header";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/footer";
 
 interface MenuItem {
   title: string;
@@ -76,12 +77,13 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 hide-scrollbar overflow-hidden">
       {/* Header */}
       <Header />
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
+      <main className="mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Classic Wines <span style={{ color: "#06A9CA" }}>Dashboard</span>
           </h2>
@@ -138,16 +140,11 @@ export default function Home() {
             </div>
           ))}
         </div>
+        </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center text-gray-500">
-            <p>&copy; 2024 Business Dashboard. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
