@@ -18,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const orderData = {
       orderId: poData.id,
       customer: poData.customerDetails,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       items: poData.items.map((item: any) => ({
         productName: item.product,
         quantity: item.quantity,
