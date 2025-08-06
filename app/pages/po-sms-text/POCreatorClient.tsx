@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FileText, Edit3, Send, CheckCircle } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 interface POItem {
   id: string;
@@ -57,14 +58,15 @@ interface DropdownOption {
 
 function toTitleCase(str: string): string {
   if (!str) return "";
-  return str.replace(/\w\S*/g, (txt: string) =>
-    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  return str.replace(
+    /\w\S*/g,
+    (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
   );
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function POCreatorClient() {
   const searchParams = useSearchParams();
@@ -376,7 +378,9 @@ export default function POCreatorClient() {
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#00B3CC] py-3 px-4 flex justify-between items-center">
           <h2 className="text-white text-lg font-semibold text-center flex-1">
-            {userName ? `${toTitleCase(userName)} Dashboard` : "Customer Dashboard"}
+            {userName
+              ? `${toTitleCase(userName)} Dashboard`
+              : "Customer Dashboard"}
           </h2>
         </div>
         {/* Main Card */}
@@ -486,8 +490,8 @@ export default function POCreatorClient() {
                                   email: option.customer.email || "",
                                   address: option.customer.billing_address
                                     ? `${
-                                        option.customer.billing_address.address ||
-                                        ""
+                                        option.customer.billing_address
+                                          .address || ""
                                       }, ${
                                         option.customer.billing_address.city ||
                                         ""
@@ -508,7 +512,8 @@ export default function POCreatorClient() {
                         )
                       ) : (
                         <p className="text-[#00B3CC] text-sm md:text-base">
-                          {poData.customerDetails.name || "No customer selected"}
+                          {poData.customerDetails.name ||
+                            "No customer selected"}
                         </p>
                       )}
                     </div>
@@ -524,7 +529,10 @@ export default function POCreatorClient() {
                   {/* Mobile View - Card Layout */}
                   <div className="block md:hidden">
                     {poData.items.map((item) => (
-                      <div key={item.id} className="border-b last:border-b-0 p-4 border-[#00B3CC]/10">
+                      <div
+                        key={item.id}
+                        className="border-b last:border-b-0 p-4 border-[#00B3CC]/10"
+                      >
                         <div className="space-y-3">
                           <div>
                             <label className="text-xs font-medium text-[#00B3CC] uppercase">
@@ -672,7 +680,9 @@ export default function POCreatorClient() {
                                         })
                                       )}
                                       value={item.product}
-                                      onChange={(selectedItem: DropdownOption) =>
+                                      onChange={(
+                                        selectedItem: DropdownOption
+                                      ) =>
                                         handleProductSelect(
                                           item.id,
                                           selectedItem as ZohoItem
@@ -794,10 +804,11 @@ export default function POCreatorClient() {
         </div>
         {/* Footer with Tech Sierra branding */}
         <footer className="text-center py-4 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
-          Powered by
-          <img
+          <Image
             src="/logo.png"
             alt="Tech Sierra Logo"
+            width={48}
+            height={32}
             className="w-12 h-8 object-contain ml-2"
           />
         </footer>
@@ -805,4 +816,3 @@ export default function POCreatorClient() {
     </div>
   );
 }
-
