@@ -1,10 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { BookOpen, ChevronDown, User, LogOut, Settings } from "lucide-react";
 
+
+  interface User {
+    name: string;
+    email: string;
+  }
+
 export default function Header() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const modalRef = useRef(null);
-  const buttonRef = useRef(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Mock user data - replace with your actual user data
   const user = {
@@ -28,15 +34,14 @@ const TechSierraLogo = () => (
         maxWidth: '48px',
         maxHeight: '48px',
         imageRendering: 'auto',
-        imageRendering: 'high-quality',
-        imageRendering: '-webkit-optimize-contrast'
       }}
     />
   </div>
 );
 
   // Function to get user initials
-  const getUserInitials = (name) => {
+
+  const getUserInitials = (name: string): string => {
     return name
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase())
@@ -46,12 +51,12 @@ const TechSierraLogo = () => (
 
   // Close modal when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         modalRef.current &&
-        !modalRef.current.contains(event.target) &&
+        !modalRef.current.contains(event.target as Node) &&
         buttonRef.current &&
-        !buttonRef.current.contains(event.target)
+        !buttonRef.current.contains(event.target as Node)
       ) {
         setIsProfileModalOpen(false);
       }
