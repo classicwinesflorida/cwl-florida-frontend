@@ -1,6 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { BookOpen, ChevronDown, User, LogOut, Settings } from "lucide-react";
 
+interface User {
+  name: string;
+  email: string;
+  role: string;
+}
+
+// Removed ClickOutsideEvent interface, use MouseEvent directly
+
 export default function Header() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const modalRef = useRef(null);
@@ -13,23 +21,23 @@ export default function Header() {
     role: "Administrator",
   };
 
-  // Function to get user initials
-  const getUserInitials = (name) => {
+  const getUserInitials = (name: string): string => {
     return name
       .split(" ")
-      .map((word) => word.charAt(0).toUpperCase())
+      .map((word: string) => word.charAt(0).toUpperCase())
       .join("")
       .slice(0, 2);
   };
 
-  // Close modal when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node | null;
       if (
         modalRef.current &&
-        !modalRef.current.contains(event.target) &&
+        target &&
+        !(modalRef.current as HTMLElement).contains(target) &&
         buttonRef.current &&
-        !buttonRef.current.contains(event.target)
+        !(buttonRef.current as HTMLElement).contains(target)
       ) {
         setIsProfileModalOpen(false);
       }

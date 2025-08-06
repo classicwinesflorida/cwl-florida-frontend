@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   UserPlus,
   Users,
@@ -10,7 +10,6 @@ import {
   List,
   FileText,
   ScrollText,
-  PlusCircle,
 } from "lucide-react";
 import Header from "@/components/header";
 
@@ -21,17 +20,9 @@ interface BookingOption {
   icon: React.ReactNode;
   gradient: string;
   type: "form" | "list";
-  url: string; 
-}
-
-interface FormData {
-  [key: string]: string;
 }
 
 export default function ManualBookingPage() {
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-  const [formData, setFormData] = useState<FormData>({});
-
   const bookingOptions: BookingOption[] = [
     {
       id: "customer-form",
@@ -40,7 +31,6 @@ export default function ManualBookingPage() {
       icon: <UserPlus className="w-8 h-8" />,
       gradient: "from-blue-500 to-cyan-500",
       type: "form",
-      url: "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/form-perma/New_Customer/qqv36f0qOkwQNkDEA7d1DUjP4B8MTQjsBODXH5Vq2FB2GwN32OPGP6vJyuay0CHAsy35WFEN3B1Q5DsB39dJJ5PfGAXp3e660dU5", 
     },
     {
       id: "customer-list",
@@ -49,7 +39,6 @@ export default function ManualBookingPage() {
       icon: <Users className="w-8 h-8" />,
       gradient: "from-blue-400 to-blue-600",
       type: "list",
-      url: "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/report-perma/All_New_Customer/G0H3YXmk0wMnRD8Jg1eVrQybjtHNXUCpYQVEjkuxe95OtXnyqCAtQr8TYX2OWVErHnTXffbW9eWwHr1hSwMQMMrabrCKZh0Rt0Ed", 
     },
     {
       id: "vendor-form",
@@ -58,7 +47,6 @@ export default function ManualBookingPage() {
       icon: <Building className="w-8 h-8" />,
       gradient: "from-green-500 to-teal-500",
       type: "form",
-      url: "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/form-perma/Vendor/6dUAJQuqwA9Js4ym5YGGsjYDdgnzazZre1pa6gFMnqRXQ7Okb3DVX30mMuEJtrP85dQE4twyq3waNW9qDnb0aEYPnWP4mk5Pjmaa", 
     },
     {
       id: "vendor-list",
@@ -67,7 +55,6 @@ export default function ManualBookingPage() {
       icon: <Building2 className="w-8 h-8" />,
       gradient: "from-green-400 to-green-600",
       type: "list",
-      url: "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/report-perma/All_Vendors/nYKayS53a9nCR0pEfhZXDeOZmtpS84FusYQSvJk4UPEnmCgWExs8JkvwqgYg8RRmdrway3qBhFMvJRCWxtMXeBxKuTFPTEJmqrPH", 
     },
     {
       id: "item-form",
@@ -76,7 +63,6 @@ export default function ManualBookingPage() {
       icon: <Package className="w-8 h-8" />,
       gradient: "from-purple-500 to-pink-500",
       type: "form",
-      url: "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/form-perma/Item/byYgX6uGZCSgnFuaU3Zh6Dd1JyrVE675XwsC3EzubA6u3AgqwV4jrpWFF5wHwg9MQPWRwt2OZHsGMpwvw5kzTybgB7RpOyaWhOjS", 
     },
     {
       id: "item-lists",
@@ -85,7 +71,6 @@ export default function ManualBookingPage() {
       icon: <List className="w-8 h-8" />,
       gradient: "from-purple-400 to-purple-600",
       type: "list",
-      url: "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/report-perma/Items_List/9Sbu3ZParrmbXEEVUM1jQmDeWtGnHseq3dzpu6GvQGuhNMwrySx5h5HmsqmJGW4U4wwHNgJ456PgGX2SuBy3QT03v9Ta4XtwsqWD", 
     },
     {
       id: "invoice-form",
@@ -94,7 +79,6 @@ export default function ManualBookingPage() {
       icon: <FileText className="w-8 h-8" />,
       gradient: "from-orange-500 to-red-500",
       type: "form",
-      url: "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/form-perma/Invoice/j9NyBVMbzAGyyWCbAG6NG00JGBNAJ0PXu9AsDDzWCuVez6ysJrCgphNXDvCJKaayhdhPeyH3XdCOKntqMeJgBAwSFBUahEBWqBnq", 
     },
     {
       id: "invoice-lists",
@@ -103,14 +87,11 @@ export default function ManualBookingPage() {
       icon: <ScrollText className="w-8 h-8" />,
       gradient: "from-orange-400 to-red-600",
       type: "list",
-      url: "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/report-perma/All_Invoices/5qQRYzHfR6f4vDGARZTgFj1pb3pN73GuHOaEt2jCAq24EtO9PsZv1rTe0jMmUkYVs3krYGKKHdpYzFzFmmfwm0WaCqXDyssuwHez", 
     },
   ];
 
-  const handleCardClick = (option: BookingOption): void => {
-    if (option.url) {
-      window.open(option.url, "_blank"); 
-    }
+  const handleCardClick = (sectionId: string): void => {
+    console.log(sectionId);
   };
 
   return (
@@ -134,7 +115,7 @@ export default function ManualBookingPage() {
           {bookingOptions.map((option) => (
             <div
               key={option.id}
-              onClick={() => handleCardClick(option)}
+              onClick={() => handleCardClick(option.id)}
               className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden"
             >
               <div
@@ -158,20 +139,16 @@ export default function ManualBookingPage() {
                     {option.description}
                   </p>
 
-                  <button
+                  <div
                     className="mt-4 px-3 py-1 rounded-full text-xs font-medium"
                     style={{
                       backgroundColor:
                         option.type === "form" ? "#06A9CA" : "#10B981",
                       color: "white",
                     }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (option.url) window.open(option.url, "_blank");
-                    }}
                   >
                     {option.type === "form" ? "Create New" : "View List"}
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
