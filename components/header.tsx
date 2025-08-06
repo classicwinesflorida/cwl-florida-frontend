@@ -10,8 +10,30 @@ export default function Header() {
   const user = {
     name: "Example User",
     email: "example.user@company.com",
-    role: "Administrator",
+   
   };
+const TechSierraLogo = () => (
+  <div 
+    className="w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+    onClick={() => window.location.href = '/'}
+    title="Go to Home Page"
+  >
+    <img 
+      src="/logo.png" 
+      alt="Tech Sierra Logo" 
+      className="max-w-full max-h-full object-contain"
+      style={{ 
+        width: 'auto',
+        height: 'auto',
+        maxWidth: '48px',
+        maxHeight: '48px',
+        imageRendering: 'auto',
+        imageRendering: 'high-quality',
+        imageRendering: '-webkit-optimize-contrast'
+      }}
+    />
+  </div>
+);
 
   // Function to get user initials
   const getUserInitials = (name) => {
@@ -55,22 +77,16 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3">
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: "#06A9CA" }}
-            >
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
+            <TechSierraLogo />
             <h1 className="text-2xl font-bold text-gray-900">
-              Tech Sierra Dashboard
+             Dashboard
             </h1>
           </div>
-
           {/* Right side - Notifications and Profile */}
           <div className="flex items-center space-x-4">
             {/* Profile Dropdown */}
@@ -93,7 +109,6 @@ export default function Header() {
                   <div className="text-sm font-medium text-gray-900">
                     {user.name}
                   </div>
-                  <div className="text-xs text-gray-500">{user.role}</div>
                 </div>
 
                 {/* Dropdown Arrow */}
@@ -126,12 +141,10 @@ export default function Header() {
                         <div className="text-sm text-gray-500">
                           {user.email}
                         </div>
-                        <div className="text-xs text-gray-400 mt-1">
-                          {user.role}
+                        
                         </div>
                       </div>
                     </div>
-                  </div>
 
                   {/* Menu Items */}
                   <div className="py-2">
@@ -140,16 +153,10 @@ export default function Header() {
                       className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                     >
                       <User className="w-4 h-4 text-gray-400" />
-                      <span>Profile Settings</span>
+                      <span>Update password</span>
                     </button>
 
-                    <button
-                      onClick={handleProfileSettings}
-                      className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <Settings className="w-4 h-4 text-gray-400" />
-                      <span>Account Settings</span>
-                    </button>
+                   
                   </div>
 
                   {/* Logout Section */}

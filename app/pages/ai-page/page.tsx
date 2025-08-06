@@ -8,7 +8,7 @@ export default function AIPage() {
     {
       id: "text",
       title: "Text Message Reader",
-      description: "Analyze and extract insights from text messages",
+      description: "Enter invoice details here...",
       icon: <MessageSquare className="w-8 h-8" />,
       gradient: "from-blue-500 to-cyan-500",
       acceptedFiles: "text/*",
@@ -16,7 +16,7 @@ export default function AIPage() {
     {
       id: "screenshot",
       title: "Screenshot Reader",
-      description: "Extract text and data from screenshots",
+      description: "Upload screenshot of invoice or proof",
       icon: <Camera className="w-8 h-8" />,
       gradient: "from-green-500 to-teal-500",
       acceptedFiles: "image/*",
@@ -24,7 +24,7 @@ export default function AIPage() {
     {
       id: "pdf",
       title: "PDF Reader",
-      description: "Read and analyze PDF documents",
+      description: "Upload PDF invoice or attachment",
       icon: <FileText className="w-8 h-8" />,
       gradient: "from-purple-500 to-pink-500",
       acceptedFiles: ".pdf",
@@ -32,7 +32,7 @@ export default function AIPage() {
     {
       id: "voice",
       title: "Voice Recording Reader",
-      description: "Convert speech to text and analyze audio",
+      description: "Record or upload voice notes for invoice detail",
       icon: <Mic className="w-8 h-8" />,
       gradient: "from-orange-500 to-red-500",
       acceptedFiles: "audio/*",
@@ -52,10 +52,10 @@ export default function AIPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            AI-Powered <span style={{ color: "#06A9CA" }}>Invoice Creator</span>
+           Smart <span style={{ color: "#06A9CA" }}>Invoice Generator</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Use our AI tools to analyze text, images, PDFs, and voice recordings
+            An intelligent tool that creates accurate and customized invoices with minimal input.
           </p>
         </div>
 
