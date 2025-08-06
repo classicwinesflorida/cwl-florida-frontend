@@ -1,12 +1,11 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { BookOpen, ChevronDown, User, LogOut, Settings } from "lucide-react";
-
-
-  interface User {
-    name: string;
-    email: string;
-  }
+import { ChevronDown, User, LogOut } from "lucide-react";
+import Image from "next/image";
+interface User {
+  name: string;
+  email: string;
+}
 
 export default function Header() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -17,28 +16,22 @@ export default function Header() {
   const user = {
     name: "Example User",
     email: "example.user@company.com",
-   
   };
-const TechSierraLogo = () => (
-  <div 
-    className="w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-200"
-    onClick={() => window.location.href = '/'}
-    title="Go to Home Page"
-  >
-    <img 
-      src="/logo.png" 
-      alt="Tech Sierra Logo" 
-      className="max-w-full max-h-full object-contain"
-      style={{ 
-        width: 'auto',
-        height: 'auto',
-        maxWidth: '48px',
-        maxHeight: '48px',
-        imageRendering: 'auto',
-      }}
-    />
-  </div>
-);
+  const TechSierraLogo = () => (
+    <div
+      className="w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+      onClick={() => (window.location.href = "/")}
+      title="Go to Home Page"
+    >
+      <Image
+        src="/logo.png"
+        alt="Tech Sierra Logo"
+        width={48}
+        height={32}
+        // className="max-w-full max-h-full object-contain"
+      />
+    </div>
+  );
 
   // Function to get user initials
 
@@ -83,15 +76,13 @@ const TechSierraLogo = () => (
   };
 
   return (
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3">
             <TechSierraLogo />
-            <h1 className="text-2xl font-bold text-gray-900">
-             Dashboard
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
           </div>
           {/* Right side - Notifications and Profile */}
           <div className="flex items-center space-x-4">
@@ -147,10 +138,9 @@ const TechSierraLogo = () => (
                         <div className="text-sm text-gray-500">
                           {user.email}
                         </div>
-                        
-                        </div>
                       </div>
                     </div>
+                  </div>
 
                   {/* Menu Items */}
                   <div className="py-2">
@@ -161,8 +151,6 @@ const TechSierraLogo = () => (
                       <User className="w-4 h-4 text-gray-400" />
                       <span>Update password</span>
                     </button>
-
-                   
                   </div>
 
                   {/* Logout Section */}
