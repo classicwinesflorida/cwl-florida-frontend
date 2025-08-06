@@ -12,6 +12,9 @@ import {
   ScrollText,
 } from "lucide-react";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
+import Breadcrumb from "@/components/breadcrumb";
+import { useRouter } from "next/navigation";
 
 interface BookingOption {
   id: string;
@@ -23,6 +26,7 @@ interface BookingOption {
 }
 
 export default function ManualBookingPage() {
+  const router = useRouter();
   const bookingOptions: BookingOption[] = [
     {
       id: "customer-form",
@@ -98,9 +102,13 @@ export default function ManualBookingPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
       <Header />
+      
+      {/* Breadcrumbs */}
+      <Breadcrumb />
+
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center mb-20">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Manual <span style={{ color: "#06A9CA" }}>Booking System</span>
           </h2>
@@ -111,7 +119,7 @@ export default function ManualBookingPage() {
         </div>
 
         {/* Booking Options Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-20">
           {bookingOptions.map((option) => (
             <div
               key={option.id}
@@ -155,6 +163,9 @@ export default function ManualBookingPage() {
           ))}
         </div>
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

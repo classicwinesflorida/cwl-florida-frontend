@@ -2,8 +2,12 @@
 import React from "react";
 import { MessageSquare, Camera, FileText, Mic } from "lucide-react";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
+import Breadcrumb from "@/components/breadcrumb";
+import { useRouter } from "next/navigation";
 
 export default function AIPage() {
+  const router = useRouter();
   const readerOptions = [
     {
       id: "text",
@@ -39,18 +43,32 @@ export default function AIPage() {
     },
   ];
 
-  const handleCardClick = () => {
-    console.log("clicked");
+  const handleCardClick = (optionId: string) => {
+    const routes: { [key: string]: string } = {
+      text: "/pages/po-sms-text",
+      screenshot: "/pages/po-sms-screenshot", 
+      pdf: "/pages/upload-pdf",
+      voice: "/pages/upload-voice"
+    };
+    
+    const route = routes[optionId];
+    if (route) {
+      router.push(route);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
       {/* Header */}
       <Header />
 
+      {/* Breadcrumbs */}
+      <Breadcrumb />
+
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
+      <main className="flex-1 mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             AI-Powered <span style={{ color: "#06A9CA" }}>Invoice Creator</span>
           </h2>
@@ -60,11 +78,11 @@ export default function AIPage() {
         </div>
 
         {/* Reader Options Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-20">
           {readerOptions.map((option) => (
             <div
               key={option.id}
-              onClick={() => handleCardClick()}
+              onClick={() => handleCardClick(option.id)}
               className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden"
             >
               <div
@@ -92,7 +110,11 @@ export default function AIPage() {
             </div>
           ))}
         </div>
+        </div>
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

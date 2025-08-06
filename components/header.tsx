@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useRef, useEffect } from "react";
 import { BookOpen, ChevronDown, User, LogOut, Settings } from "lucide-react";
 
