@@ -52,7 +52,7 @@ export default function Home() {
       title: "Check Zoho Reports",
       description: "View detailed analytics and reports",
       icon: <BarChart3 className="w-8 h-8" />,
-      url: "https://reports.zoho.com",
+      url: "https://books.zoho.com/app/889334426#/reports",
       gradient: "from-orange-500 to-red-500",
       type: "external",
     },
