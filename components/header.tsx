@@ -52,11 +52,16 @@ export default function Header() {
 
   const TechSierraLogo = () => (
     <div
-      className="w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+      className="w-20 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-200"
       onClick={() => (window.location.href = "/pages/dashboard")}
       title="Go to Home Page"
     >
-      <Image src="/logo.png" alt="Tech Sierra Logo" width={48} height={32} />
+      <Image
+        src="/logo.png"
+        alt="Tech Sierra Logo"
+        width={80}
+        height={70}
+      />
     </div>
   );
 
