@@ -99,7 +99,6 @@ export default function ManualBookingPage() {
       url: "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/report-perma/All_Invoices/5qQRYzHfR6f4vDGARZTgFj1pb3pN73GuHOaEt2jCAq24EtO9PsZv1rTe0jMmUkYVs3krYGKKHdpYzFzFmmfwm0WaCqXDyssuwHez", 
     },
   ];
-
   const handleCardClick = (option: BookingOption): void => {
     if (option.url) {
       window.open(option.url, "_blank"); 
