@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { MessageSquare, Camera, FileText, Mic } from "lucide-react";
+import React, { useCallback, useState } from "react";
+import { MessageSquare, Camera, FileText, Mic, Loader2 } from "lucide-react";
 import Header from "@/components/header";
 import Breadcrumb from "@/components/breadcrumb";
 import { useRouter } from "next/navigation";
@@ -8,6 +8,8 @@ import Footer from "@/components/footer";
 
 export default function AIPage() {
   const router = useRouter();
+  const [loadingOption, setLoadingOption] = useState<string | null>(null);
+
   const readerOptions = [
     {
       id: "text",
@@ -43,20 +45,47 @@ export default function AIPage() {
     },
   ];
 
-  const handleCardClick = (optionId: string) => {
-    const routes: { [key: string]: string } = {
-      text: "/pages/po-sms-text",
-      screenshot: "/pages/po-sms-screenshot",
-      pdf: "/pages/upload-pdf",
-      voice: "/pages/upload-voice",
-    };
+  const handleCardClick = useCallback(
+    async (optionId: string) => {
+      const routes: { [key: string]: string } = {
+        text: "/pages/po-sms-text",
+        screenshot: "/pages/po-sms-screenshot",
+        pdf: "/pages/upload-pdf",
+        voice: "/pages/upload-voice",
+      };
 
-    const route = routes[optionId];
-    if (route) {
-      console.log("route:", route);
-      router.push(route);
-    }
-  };
+      const route = routes[optionId];
+      if (route) {
+        console.log("route:", route);
+
+        // Show loading state immediately
+        setLoadingOption(optionId);
+
+        try {
+          // Use router.push with prefetch
+          await router.push(route);
+        } catch (error) {
+          console.error("Navigation error:", error);
+          setLoadingOption(null);
+        }
+      }
+    },
+    [router]
+  );
+
+  // Prefetch routes on component mount
+  React.useEffect(() => {
+    const routes = [
+      "/pages/po-sms-text",
+      "/pages/po-sms-screenshot",
+      "/pages/upload-pdf",
+      "/pages/upload-voice",
+    ];
+
+    routes.forEach((route) => {
+      router.prefetch(route);
+    });
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -84,6 +113,16 @@ export default function AIPage() {
               onClick={() => handleCardClick(option.id)}
               className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden"
             >
+              {/* Loading overlay */}
+              {loadingOption === option.id && (
+                <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10 rounded-2xl">
+                  <div className="flex flex-col items-center">
+                    <Loader2 className="w-8 h-8 animate-spin text-[#06A9CA]" />
+                    <p className="text-sm text-gray-600 mt-2">Loading...</p>
+                  </div>
+                </div>
+              )}
+
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${option.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
               ></div>
@@ -111,7 +150,7 @@ export default function AIPage() {
         </div>
       </main>
       {/* Footer */}
-        <Footer />
+      <Footer />
     </div>
   );
 }
