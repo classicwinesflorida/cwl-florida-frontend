@@ -2,40 +2,37 @@
 import React from "react";
 import {
   ExternalLink,
-  BookOpen,
   BarChart3,
   PlusCircle,
   Bot,
-  Calculator,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 
+// Add your logo images here
+const zohoLogo = "/zohoo.png";
+const quickbooksLogo = "/quickbooklogoo.png";
+
 interface MenuItem {
   title: string;
   description: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   url: string;
   gradient: string;
   type: "external" | "internal";
+  isImage?: boolean;
+  imageSrc?: string;
 }
 
 export default function Dashboard() {
   const router = useRouter();
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (!token) {
-  //     router.push("/");
-  //     return;
-  //   }
-  // }, [router]);
-
   const menuItems: MenuItem[] = [
     {
       title: "Go to Zoho Books",
       description: "Access your Zoho Books accounting platform",
-      icon: <BookOpen className="w-8 h-8" />,
+      isImage: true,
+      imageSrc: zohoLogo,
       url: "https://accounts.zoho.com/signin?servicename=ZohoBooks&signupurl=https://www.zoho.com%2fin/books/signup/",
       gradient: "from-blue-500 to-cyan-500",
       type: "external",
@@ -43,7 +40,8 @@ export default function Dashboard() {
     {
       title: "Go to Quick Books",
       description: "Navigate to your QuickBooks dashboard",
-      icon: <Calculator className="w-8 h-8" />,
+      isImage: true,
+      imageSrc: quickbooksLogo,
       url: "https://accounts.intuit.com/app/sign-in?app_group=QBO&asset_alias=Intuit.accounting.core.qbowebapp&locale=en-ROW&state=%7B%22queryParams%22%3A%7B%22locale%22%3A%22en-ROW%22%7D%7D&app_environment=prod",
       gradient: "from-green-500 to-teal-500",
       type: "external",
@@ -51,7 +49,7 @@ export default function Dashboard() {
     {
       title: "Book an Order Manually",
       description: "Create and manage orders manually",
-      icon: <PlusCircle className="w-8 h-8" />,
+      icon: <PlusCircle className="w-16 h-16 text-[#8e24aa]" />,
       url: "/pages/order-manually",
       gradient: "from-purple-500 to-pink-500",
       type: "internal",
@@ -59,7 +57,7 @@ export default function Dashboard() {
     {
       title: "Check Zoho Reports",
       description: "View detailed analytics and reports",
-      icon: <BarChart3 className="w-8 h-8" />,
+      icon: <BarChart3 className="w-16 h-16 text-[#fb8c00]" />,
       url: "https://books.zoho.com/app/889334426#/reports",
       gradient: "from-orange-500 to-red-500",
       type: "external",
@@ -67,7 +65,7 @@ export default function Dashboard() {
     {
       title: "Let AI Book My Order",
       description: "Use AI assistance to automate order booking",
-      icon: <Bot className="w-8 h-8" />,
+      icon: <Bot className="w-16 h-16 text-[#3949ab]" />,
       url: "/pages/ai-page",
       gradient: "from-indigo-500 to-purple-500",
       type: "internal",
@@ -78,17 +76,14 @@ export default function Dashboard() {
     if (item.type === "external") {
       window.open(item.url, "_blank", "noopener,noreferrer");
     } else if (item.type === "internal") {
-      console.log("item.url:", item.url);
       router.push(item.url);
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-      {/* Use the complete Header component */}
       <Header />
 
-      {/* Main Content */}
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -97,7 +92,6 @@ export default function Dashboard() {
             </h2>
           </div>
 
-          {/* Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {menuItems.map((item, index) => (
               <div
@@ -113,15 +107,25 @@ export default function Dashboard() {
                 {/* Card Content */}
                 <div className="relative p-8">
                   <div className="flex items-center justify-between mb-6">
-                    <div
-                      className="p-3 rounded-xl text-white"
-                      style={{ backgroundColor: "#06A9CA" }}
-                    >
-                      {item.icon}
+                    {/* Consistent logo/icon container */}
+                    <div className="w-20 h-20 flex items-center justify-center rounded-xl bg-white border border-gray-200">
+                      {item.isImage && item.imageSrc ? (
+                        <img
+                          src={item.imageSrc}
+                          alt={item.title}
+                          className={
+                            item.title === "Go to Zoho Books"
+                              ? "object-contain w-16 h-16 scale-125"
+                              : "object-contain w-16 h-16"
+                          }
+                        />
+                      ) : (
+                        item.icon
+                      )}
                     </div>
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-gray-800">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-gray-800">
                     {item.title}
                   </h3>
 
@@ -150,7 +154,6 @@ export default function Dashboard() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
