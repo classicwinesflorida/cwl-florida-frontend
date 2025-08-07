@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8080";
 
@@ -53,7 +54,7 @@ export default function Homepage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#06A9CA] to-[#0891b3] p-5">
-      <div className="bg-white p-10 rounded-xl shadow-2xl w-full max-w-md">
+      <div className="bg-white pt-10 pl-10 pr-10 pb-2 rounded-xl shadow-2xl w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome Back
@@ -114,12 +115,16 @@ export default function Homepage() {
             {isLoading ? "Signing in..." : "Sign In"}
           </button>
         </form>
-
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center">
-          <p className="text-xs text-gray-500">
-            Demo credentials: example@gmail.com / example@12345
-          </p>
-        </div>
+        <footer className="text-center py-4 pt-6 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
+          Powered by
+          <Image
+            src="/logo.png"
+            alt="Tech Sierra Logo"
+            width={48}
+            height={32}
+            className="object-contain ml-2"
+          />
+        </footer>
       </div>
     </div>
   );
