@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Header from "@/components/header";
 import Breadcrumb from "@/components/breadcrumb";
+import Footer from "@/components/footer";
 
 interface BookingOption {
   id: string;
@@ -171,6 +172,8 @@ export default function ManualBookingPage() {
           ))}
         </div>
       </main>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

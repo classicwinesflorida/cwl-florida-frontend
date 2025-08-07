@@ -4,6 +4,7 @@ import { MessageSquare, Camera, FileText, Mic } from "lucide-react";
 import Header from "@/components/header";
 import Breadcrumb from "@/components/breadcrumb";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/footer";
 
 export default function AIPage() {
   const router = useRouter();
@@ -109,6 +110,8 @@ export default function AIPage() {
           ))}
         </div>
       </main>
+      {/* Footer */}
+        <Footer />
     </div>
   );
 }
