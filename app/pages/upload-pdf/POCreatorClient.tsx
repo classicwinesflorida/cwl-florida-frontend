@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 
 function toTitleCase(str: string): string {
   if (!str) return "";
@@ -313,17 +312,6 @@ export default function POCreatorClient() {
             )}
           </div>
         </div>
-        {/* Footer - Powered by + Logo */}
-        <footer className="text-center py-4 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
-          Powered by
-          <Image
-            src="/logo.png"
-            alt="Tech Sierra Logo"
-            width={48}
-            height={32}
-            className="object-contain ml-2"
-          />
-        </footer>
       </div>
     </div>
   );

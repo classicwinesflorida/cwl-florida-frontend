@@ -19,16 +19,15 @@ export default function Header() {
   };
   const TechSierraLogo = () => (
     <div
-      className="w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+      className="w-20 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-200 py-[5px]"
       onClick={() => (window.location.href = "/")}
       title="Go to Home Page"
     >
       <Image
         src="/logo.png"
         alt="Tech Sierra Logo"
-        width={48}
-        height={32}
-        // className="max-w-full max-h-full object-contain"
+        width={80}
+        height={70}
       />
     </div>
   );
