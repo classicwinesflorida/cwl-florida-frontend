@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { FileText, Edit3, Send, CheckCircle } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 
 interface POItem {
   id: string;
@@ -802,16 +801,6 @@ export default function POCreatorClient() {
             )}
           </div>
         </div>
-        {/* Footer with Tech Sierra branding */}
-        <footer className="text-center py-4 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
-          <Image
-            src="/logo.png"
-            alt="Tech Sierra Logo"
-            width={48}
-            height={32}
-            className="w-12 h-8 object-contain ml-2"
-          />
-        </footer>
       </div>
     </div>
   );
