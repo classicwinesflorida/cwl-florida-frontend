@@ -2,6 +2,8 @@
 import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import logo from "./assets/images/file.svg";
+// import logo from "../public/logo.png";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8080";
 
@@ -97,19 +99,17 @@ export default function Homepage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#06A9CA] to-[#0891b3] p-5">
-      <div className="bg-white pt-10 pl-10 pr-10 pb-2 rounded-xl shadow-2xl w-full max-w-md">
+      <div className="bg-black pt-10 pl-10 pr-10 pb-2 rounded-xl shadow-2xl w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome Back
-          </h1>
-          <p className="text-gray-600">Sign in to your Classic Wines account</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
+          <p className="text-white">Sign in to your Classic Wines account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-semibold text-gray-700 mb-2"
+              className="block text-sm font-semibold text-white mb-2"
             >
               Email Address
             </label>
@@ -121,7 +121,7 @@ export default function Homepage() {
               onChange={handleChange}
               required
               autoComplete="email"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200 text-black"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200 text-white"
               placeholder="Enter your email"
             />
           </div>
@@ -129,7 +129,7 @@ export default function Homepage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-semibold text-gray-700 mb-2"
+              className="block text-sm font-semibold text-white mb-2"
             >
               Password
             </label>
@@ -141,7 +141,7 @@ export default function Homepage() {
               onChange={handleChange}
               required
               autoComplete="current-password"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200 text-black"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200 text-white"
               placeholder="Enter your password"
             />
           </div>
@@ -190,7 +190,7 @@ export default function Homepage() {
         <footer className="text-center py-4 pt-6 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
           Powered by
           <Image
-            src="/logo.png"
+            src={logo}
             alt="Tech Sierra Logo"
             width={48}
             height={32}
