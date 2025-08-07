@@ -4,12 +4,13 @@ import {
   ExternalLink,
   BarChart3,
   PlusCircle,
-  Bot,
+  Bot
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
 
-// Add your logo images here
+// Logo image paths
 const zohoLogo = "/zohoo.png";
 const quickbooksLogo = "/quickbooklogoo.png";
 
@@ -18,7 +19,6 @@ interface MenuItem {
   description: string;
   icon?: React.ReactNode;
   url: string;
-  gradient: string;
   type: "external" | "internal";
   isImage?: boolean;
   imageSrc?: string;
@@ -34,7 +34,6 @@ export default function Dashboard() {
       isImage: true,
       imageSrc: zohoLogo,
       url: "https://accounts.zoho.com/signin?servicename=ZohoBooks&signupurl=https://www.zoho.com%2fin/books/signup/",
-      gradient: "from-blue-500 to-cyan-500",
       type: "external",
     },
     {
@@ -43,31 +42,27 @@ export default function Dashboard() {
       isImage: true,
       imageSrc: quickbooksLogo,
       url: "https://accounts.intuit.com/app/sign-in?app_group=QBO&asset_alias=Intuit.accounting.core.qbowebapp&locale=en-ROW&state=%7B%22queryParams%22%3A%7B%22locale%22%3A%22en-ROW%22%7D%7D&app_environment=prod",
-      gradient: "from-green-500 to-teal-500",
       type: "external",
     },
     {
       title: "Book an Order Manually",
       description: "Create and manage orders manually",
-      icon: <PlusCircle className="w-16 h-16 text-[#8e24aa]" />,
+      icon: <PlusCircle className="w-20 h-20 text-[#8e24aa]" />,
       url: "/pages/order-manually",
-      gradient: "from-purple-500 to-pink-500",
       type: "internal",
     },
     {
       title: "Check Zoho Reports",
       description: "View detailed analytics and reports",
-      icon: <BarChart3 className="w-16 h-16 text-[#fb8c00]" />,
+      icon: <BarChart3 className="w-20 h-20 text-[#fb8c00]" />,
       url: "https://books.zoho.com/app/889334426#/reports",
-      gradient: "from-orange-500 to-red-500",
       type: "external",
     },
     {
       title: "Let AI Book My Order",
       description: "Use AI assistance to automate order booking",
-      icon: <Bot className="w-16 h-16 text-[#3949ab]" />,
+      icon: <Bot className="w-20 h-20 text-[#3949ab]" />,
       url: "/pages/ai-page",
-      gradient: "from-indigo-500 to-purple-500",
       type: "internal",
     },
   ];
@@ -91,49 +86,45 @@ export default function Dashboard() {
               Classic Wines <span style={{ color: "#06A9CA" }}>Dashboard</span>
             </h2>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {menuItems.map((item, index) => (
               <div
                 key={index}
                 onClick={() => handleCardClick(item)}
                 className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden"
+                style={{ minHeight: "220px" }}
               >
-                {/* Card Background Gradient */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
-                ></div>
-
                 {/* Card Content */}
-                <div className="relative p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    {/* Consistent logo/icon container */}
-                    <div className="w-20 h-20 flex items-center justify-center rounded-xl bg-white border border-gray-200">
+                <div className="relative flex flex-col h-full p-6 pl-8">
+                  {/* Logo and Title Row */}
+                  <div className="flex flex-row items-center w-full">
+                    {/* Logo/Icon Container - always white, always same size */}
+                    <div className="w-24 h-24 rounded-lg flex items-center justify-center bg-white border border-gray-200">
                       {item.isImage && item.imageSrc ? (
                         <img
                           src={item.imageSrc}
                           alt={item.title}
                           className={
                             item.title === "Go to Zoho Books"
-                              ? "object-contain w-16 h-16 scale-125"
-                              : "object-contain w-16 h-16"
+                              ? "object-contain w-20 h-20 scale-125"
+                              : "object-contain w-20 h-20"
                           }
                         />
                       ) : (
                         item.icon
                       )}
                     </div>
+                    {/* Title */}
+                    <h3 className="text-3xl font-bold text-gray-900 ml-8">
+                      {item.title}
+                    </h3>
                   </div>
-
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-gray-800">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-gray-600 leading-relaxed mb-6">
+                  {/* Subtitle/Description */}
+                  <p className="text-gray-600 leading-relaxed mt-4 text-lg">
                     {item.description}
                   </p>
-
-                  <div className="flex items-center justify-end">
+                  {/* External Link Icon at Bottom Right */}
+                  <div className="absolute bottom-4 right-4">
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
                       style={{ backgroundColor: "#06A9CA" }}
@@ -142,7 +133,6 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-
                 {/* Hover Border Effect */}
                 <div
                   className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-opacity-20 transition-all duration-300"
@@ -153,16 +143,7 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
-
-      <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <p className="text-gray-600">
-              © 2024 Classic Wines. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
