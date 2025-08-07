@@ -127,9 +127,19 @@ export default function Header() {
         });
         setTimeout(() => setShowUpdatePassword(false), 2000);
       }
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || "Network error. Please try again.";
+    } catch (error: unknown) {
+      let errorMessage = "Network error. Please try again.";
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        typeof (error as { response?: { data?: { message?: string } } })
+          .response === "object"
+      ) {
+        errorMessage =
+          (error as { response?: { data?: { message?: string } } }).response
+            ?.data?.message || "Network error. Please try again.";
+      }
       setUpdateError(errorMessage);
     }
   };
