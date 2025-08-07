@@ -48,11 +48,12 @@ export default function AIPage() {
       text: "/pages/po-sms-text",
       screenshot: "/pages/po-sms-screenshot",
       pdf: "/pages/upload-pdf",
-      voice: "/pages/upload-voice"
+      voice: "/pages/upload-voice",
     };
 
     const route = routes[optionId];
     if (route) {
+      console.log("route:", route);
       router.push(route);
     }
   };
@@ -64,13 +65,14 @@ export default function AIPage() {
       <Breadcrumb />
 
       {/* Main Content */}
-     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-           Smart <span style={{ color: "#06A9CA" }}>Invoice Generator</span>
+            Smart <span style={{ color: "#06A9CA" }}>Invoice Generator</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            An intelligent tool that creates accurate and customized invoices with minimal input.
+            An intelligent tool that creates accurate and customized invoices
+            with minimal input.
           </p>
         </div>
 
