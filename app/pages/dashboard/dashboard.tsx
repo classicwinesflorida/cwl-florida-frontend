@@ -23,13 +23,13 @@ interface MenuItem {
 export default function Dashboard() {
   const router = useRouter();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/");
-      return;
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     router.push("/");
+  //     return;
+  //   }
+  // }, [router]);
 
   const menuItems: MenuItem[] = [
     {
@@ -52,7 +52,7 @@ export default function Dashboard() {
       title: "Book an Order Manually",
       description: "Create and manage orders manually",
       icon: <PlusCircle className="w-8 h-8" />,
-      url: "/order-manually",
+      url: "/pages/order-manually",
       gradient: "from-purple-500 to-pink-500",
       type: "internal",
     },
@@ -68,7 +68,7 @@ export default function Dashboard() {
       title: "Let AI Book My Order",
       description: "Use AI assistance to automate order booking",
       icon: <Bot className="w-8 h-8" />,
-      url: "/ai-page",
+      url: "/pages/ai-page",
       gradient: "from-indigo-500 to-purple-500",
       type: "internal",
     },
@@ -78,6 +78,7 @@ export default function Dashboard() {
     if (item.type === "external") {
       window.open(item.url, "_blank", "noopener,noreferrer");
     } else if (item.type === "internal") {
+      console.log("item.url:", item.url);
       router.push(item.url);
     }
   };
