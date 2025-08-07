@@ -44,7 +44,7 @@ export default function Homepage() {
       } else {
         setError(data.message || "Login failed");
       }
-    } catch (err) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setIsLoading(false);
