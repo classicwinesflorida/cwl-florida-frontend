@@ -1,12 +1,17 @@
 "use client";
-import React from "react";
-import { ExternalLink, BarChart3, PlusCircle, Bot } from "lucide-react";
+import React, { useCallback, useState } from "react";
+import {
+  ExternalLink,
+  BarChart3,
+  PlusCircle,
+  Bot,
+  Loader2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Image from "next/image";
 
-// Logo image paths
 const zohoLogo = "/zohoo.png";
 const quickbooksLogo = "/quickbooklogoo.png";
 
@@ -22,54 +27,81 @@ interface MenuItem {
 
 export default function Dashboard() {
   const router = useRouter();
+  const [loadingCard, setLoadingCard] = useState<string | null>(null);
 
-  const menuItems: MenuItem[] = [
-    {
-      title: "Go to Zoho Books",
-      description: "Access your Zoho Books accounting platform",
-      isImage: true,
-      imageSrc: zohoLogo,
-      url: "https://accounts.zoho.com/signin?servicename=ZohoBooks&signupurl=https://www.zoho.com%2fin/books/signup/",
-      type: "external",
-    },
-    {
-      title: "Go to Quick Books",
-      description: "Navigate to your QuickBooks dashboard",
-      isImage: true,
-      imageSrc: quickbooksLogo,
-      url: "https://accounts.intuit.com/app/sign-in?app_group=QBO&asset_alias=Intuit.accounting.core.qbowebapp&locale=en-ROW&state=%7B%22queryParams%22%3A%7B%22locale%22%3A%22en-ROW%22%7D%7D&app_environment=prod",
-      type: "external",
-    },
-    {
-      title: "Book an Order Manually",
-      description: "Create and manage orders manually",
-      icon: <PlusCircle className="w-20 h-20 text-[#8e24aa]" />,
-      url: "/pages/order-manually",
-      type: "internal",
-    },
-    {
-      title: "Check Zoho Reports",
-      description: "View detailed analytics and reports",
-      icon: <BarChart3 className="w-20 h-20 text-[#fb8c00]" />,
-      url: "https://books.zoho.com/app/889334426#/reports",
-      type: "external",
-    },
-    {
-      title: "Let AI Book My Order",
-      description: "Use AI assistance to automate order booking",
-      icon: <Bot className="w-20 h-20 text-[#3949ab]" />,
-      url: "/pages/ai-page",
-      type: "internal",
-    },
-  ];
+  const menuItems: MenuItem[] = React.useMemo(
+    () => [
+      {
+        title: "Go to Zoho Books",
+        description: "Access your Zoho Books accounting platform",
+        isImage: true,
+        imageSrc: zohoLogo,
+        url: "https://accounts.zoho.com/signin?servicename=ZohoBooks&signupurl=https://www.zoho.com%2fin/books/signup/",
+        type: "external",
+      },
+      {
+        title: "Go to Quick Books",
+        description: "Navigate to your QuickBooks dashboard",
+        isImage: true,
+        imageSrc: quickbooksLogo,
+        url: "https://accounts.intuit.com/app/sign-in?app_group=QBO&asset_alias=Intuit.accounting.core.qbowebapp&locale=en-ROW&state=%7B%22queryParams%22%3A%7B%22locale%22%3A%22en-ROW%22%7D%7D&app_environment=prod",
+        type: "external",
+      },
+      {
+        title: "Book an Order Manually",
+        description: "Create and manage orders manually",
+        icon: <PlusCircle className="w-20 h-20 text-[#8e24aa]" />,
+        url: "/pages/order-manually",
+        type: "internal",
+      },
+      {
+        title: "Check Zoho Reports",
+        description: "View detailed analytics and reports",
+        icon: <BarChart3 className="w-20 h-20 text-[#fb8c00]" />,
+        url: "https://books.zoho.com/app/889334426#/reports",
+        type: "external",
+      },
+      {
+        title: "Let AI Book My Order",
+        description: "Use AI assistance to automate order booking",
+        icon: <Bot className="w-20 h-20 text-[#3949ab]" />,
+        url: "/pages/ai-page",
+        type: "internal",
+      },
+    ],
+    []
+  );
 
-  const handleCardClick = (item: MenuItem): void => {
-    if (item.type === "external") {
-      window.open(item.url, "_blank", "noopener,noreferrer");
-    } else if (item.type === "internal") {
-      router.push(item.url);
-    }
-  };
+  const handleCardClick = useCallback(
+    async (item: MenuItem): Promise<void> => {
+      console.log(`Navigating to ${item.title} (${item.type})`);
+
+      if (item.type === "external") {
+        window.open(item.url, "_blank", "noopener,noreferrer");
+      } else if (item.type === "internal") {
+        // Show loading state immediately
+        setLoadingCard(item.title);
+
+        try {
+          // Use router.push with prefetch
+          await router.push(item.url);
+        } catch (error) {
+          console.error("Navigation error:", error);
+          setLoadingCard(null);
+        }
+      }
+    },
+    [router]
+  );
+
+  // Prefetch internal routes on component mount
+  React.useEffect(() => {
+    menuItems.forEach((item) => {
+      if (item.type === "internal") {
+        router.prefetch(item.url);
+      }
+    });
+  }, [router, menuItems]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
@@ -90,6 +122,16 @@ export default function Dashboard() {
                 className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden"
                 style={{ minHeight: "220px" }}
               >
+                {/* Loading overlay */}
+                {loadingCard === item.title && (
+                  <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10 rounded-2xl">
+                    <div className="flex flex-col items-center">
+                      <Loader2 className="w-8 h-8 animate-spin text-[#06A9CA]" />
+                      <p className="text-sm text-gray-600 mt-2">Loading...</p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Card Content */}
                 <div className="relative flex flex-col h-full p-6 pl-8">
                   {/* Logo and Title Row */}
@@ -107,6 +149,7 @@ export default function Dashboard() {
                               ? "object-contain w-20 h-20 scale-125"
                               : "object-contain w-20 h-20"
                           }
+                          priority={index < 3} // Prioritize first 3 images
                         />
                       ) : (
                         item.icon
