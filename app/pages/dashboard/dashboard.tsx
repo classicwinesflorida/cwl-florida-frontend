@@ -1,14 +1,10 @@
 "use client";
 import React from "react";
-import {
-  ExternalLink,
-  BarChart3,
-  PlusCircle,
-  Bot
-} from "lucide-react";
+import { ExternalLink, BarChart3, PlusCircle, Bot } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import Image from "next/image";
 
 // Logo image paths
 const zohoLogo = "/zohoo.png";
@@ -101,9 +97,11 @@ export default function Dashboard() {
                     {/* Logo/Icon Container - always white, always same size */}
                     <div className="w-24 h-24 rounded-lg flex items-center justify-center bg-white border border-gray-200">
                       {item.isImage && item.imageSrc ? (
-                        <img
+                        <Image
                           src={item.imageSrc}
                           alt={item.title}
+                          width={80}
+                          height={80}
                           className={
                             item.title === "Go to Zoho Books"
                               ? "object-contain w-20 h-20 scale-125"
