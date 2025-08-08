@@ -5,7 +5,7 @@ import Image from "next/image";
 import logo from "./assets/images/file.svg";
 // import logo from "../public/logo.png";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8080";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 export default function Homepage() {
   const [formData, setFormData] = useState({
