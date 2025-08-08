@@ -154,7 +154,7 @@ export default function PerformanceHeader() {
             <div className="flex items-center space-x-3">
               <div className="w-20 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white">
                 <Image
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="Tech Sierra Logo"
                   width={80}
                   height={70}

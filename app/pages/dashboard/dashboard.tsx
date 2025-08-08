@@ -12,8 +12,8 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Image from "next/image";
 
-const zohoLogo = "/zohoo.png";
-const quickbooksLogo = "/quickbooklogoo.png";
+const zohoLogo = "/zohoo.svg";
+const quickbooksLogo = "/quickbooklogoo.svg";
 
 interface MenuItem {
   title: string;
