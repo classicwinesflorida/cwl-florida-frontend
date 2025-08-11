@@ -21,11 +21,12 @@ const preloadUserData = (): User | null => {
   if (typeof window === "undefined") return null;
 
   try {
-    const userStr = localStorage.getItem("user");
-    if (userStr) {
+    const userName = localStorage.getItem("name");
+    const userEmail = localStorage.getItem("user");
+    if (userName || userEmail) {
       return {
-        name: userStr,
-        email: userStr.toLowerCase().replace(/\s/g, "."),
+        name: userName || "",
+        email: userEmail ? userEmail.toLowerCase().replace(/\s/g, ".") : "",
       };
     }
   } catch (error) {
@@ -177,7 +178,7 @@ export default function PerformanceHeader() {
 
   return (
     <>
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 h-[8vh]">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Title */}
@@ -195,7 +196,7 @@ export default function PerformanceHeader() {
                 }}
               >
                 <Image
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="Tech Sierra Logo"
                   width={80}
                   height={70}

@@ -2,8 +2,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import logo from "./assets/images/file.svg";
-// import logo from "../public/logo.png";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
@@ -63,6 +61,7 @@ export default function Homepage() {
         // Store data and navigate
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", formData.email);
+        localStorage.setItem("name", data?.user?.name);
 
         // Use replace instead of push to prevent back button issues
         router.replace("/pages/dashboard");
@@ -89,7 +88,7 @@ export default function Homepage() {
     const baseClasses =
       "w-full font-semibold py-3 px-4 rounded-lg transition-colors duration-200";
     const enabledClasses =
-      "bg-[#06A9CA] hover:bg-[#0891b3] text-white transform hover:-translate-y-0.5";
+      "bg-[#06A9CA] hover:bg-[#0891b3] transform hover:-translate-y-0.5";
     const disabledClasses = "bg-gray-300 text-gray-500 cursor-not-allowed";
 
     return `${baseClasses} ${
@@ -99,18 +98,15 @@ export default function Homepage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#06A9CA] to-[#0891b3] p-5">
-      <div className="bg-black pt-10 pl-10 pr-10 pb-2 rounded-xl shadow-2xl w-full max-w-md">
+      <div className="bg-white pt-10 pl-10 pr-10 pb-2 rounded-xl shadow-2xl w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-white">Sign in to your Classic Wines account</p>
+          <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
+          <p>Sign in to your Classic Wines account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-semibold text-white mb-2"
-            >
+            <label htmlFor="email" className="block text-sm font-semibold mb-2">
               Email Address
             </label>
             <input
@@ -121,7 +117,7 @@ export default function Homepage() {
               onChange={handleChange}
               required
               autoComplete="email"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200 text-white"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200"
               placeholder="Enter your email"
             />
           </div>
@@ -129,7 +125,7 @@ export default function Homepage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-semibold text-white mb-2"
+              className="block text-sm font-semibold mb-2"
             >
               Password
             </label>
@@ -141,7 +137,7 @@ export default function Homepage() {
               onChange={handleChange}
               required
               autoComplete="current-password"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200 text-white"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200"
               placeholder="Enter your password"
             />
           </div>
@@ -160,7 +156,7 @@ export default function Homepage() {
             {isLoading ? (
               <span className="flex items-center justify-center">
                 <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  className="animate-spin -ml-1 mr-3 h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -190,7 +186,7 @@ export default function Homepage() {
         <footer className="text-center py-4 pt-6 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
           Powered by
           <Image
-            src={logo}
+            src="/logo.svg"
             alt="Tech Sierra Logo"
             width={48}
             height={32}
