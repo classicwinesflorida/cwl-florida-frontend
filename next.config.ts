@@ -23,8 +23,9 @@ const nextConfig: NextConfig = {
         ...(config.optimization || {}),
         splitChunks: {
           chunks: 'all',
-          maxInitialRequests: 25,
-          minSize: 10000,
+          maxSize: 100000,    // ~100 KB: adjust up/down (bytes)
+          minSize: 20000,     // minimum chunk size
+          maxInitialRequests: 30,
           cacheGroups: {
             vendor: {
               test: /[\\/]node_modules[\\/]/,
