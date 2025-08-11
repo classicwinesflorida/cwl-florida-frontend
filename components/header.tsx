@@ -11,14 +11,19 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import PasswordUpdateForm from "./PasswordUpdateForm";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 interface User {
   name: string;
   email: string;
 }
 
-// Pre-load user data to prevent delays
+// Safer preload function with better SSR handling
 const preloadUserData = (): User | null => {
-  if (typeof window === "undefined") return null;
+  // More thorough check for browser environment
+  if (typeof window === "undefined" || typeof localStorage === "undefined") {
+    return null;
+  }
 
   try {
     const userStr = localStorage.getItem("user");
@@ -35,8 +40,8 @@ const preloadUserData = (): User | null => {
 };
 
 export default function PerformanceHeader() {
-  // Initialize with preloaded data to prevent loading states
-  const [user, setUser] = useState<User | null>(() => preloadUserData());
+  // Don't initialize with preloaded data to avoid hydration issues
+  const [user, setUser] = useState<User | null>(null);
   const [isProfileOpen, setProfileOpen] = useState<boolean>(false);
   const [showPwdForm, setShowPwdForm] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -45,18 +50,16 @@ export default function PerformanceHeader() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
-  // Handle mounting and ensure user data is available
+  // Handle mounting and load user data only after mount
   useEffect(() => {
     setIsMounted(true);
-
-    // Double-check user data after mount
-    if (!user && typeof window !== "undefined") {
-      const userData = preloadUserData();
-      if (userData) {
-        setUser(userData);
-      }
+    
+    // Load user data only after component mounts (client-side only)
+    const userData = preloadUserData();
+    if (userData) {
+      setUser(userData);
     }
-  }, [user]);
+  }, []);
 
   // Generate user initials
   const initials = useMemo(() => {
@@ -85,7 +88,6 @@ export default function PerformanceHeader() {
   // Add/remove event listeners with proper cleanup
   useEffect(() => {
     if (isProfileOpen && isMounted) {
-      // Use capture phase for better performance
       document.addEventListener("mousedown", handleClickOutside, {
         capture: true,
       });
@@ -102,10 +104,8 @@ export default function PerformanceHeader() {
     e.preventDefault();
     e.stopPropagation();
 
-    // Ensure immediate state update
     setProfileOpen((current) => {
       const newState = !current;
-      // Force immediate DOM update
       requestAnimationFrame(() => {
         if (buttonRef.current) {
           buttonRef.current.setAttribute("aria-expanded", String(newState));
@@ -115,12 +115,20 @@ export default function PerformanceHeader() {
     });
   }, []);
 
-  // Handle user logout
-  const handleLogout = useCallback(() => {
+  // Updated logout logic
+  const handleLogout = useCallback(async () => {
     try {
-      if (typeof window !== "undefined") {
+      // Call backend to clear the cookie
+      await fetch(`${BASE_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      
+      // Clear localStorage only if available
+      if (typeof localStorage !== "undefined") {
         localStorage.clear();
       }
+      
       setProfileOpen(false);
       router.push("/");
     } catch (error) {

@@ -74,19 +74,14 @@ export default function Dashboard() {
 
   const handleCardClick = useCallback(
     async (item: MenuItem): Promise<void> => {
-      console.log(`Navigating to ${item.title} (${item.type})`);
-
       if (item.type === "external") {
         window.open(item.url, "_blank", "noopener,noreferrer");
       } else if (item.type === "internal") {
-        // Show loading state immediately
         setLoadingCard(item.title);
-
         try {
-          // Use router.push with prefetch
           await router.push(item.url);
-        } catch (error) {
-          console.error("Navigation error:", error);
+        } catch {
+          // Handle navigation error silently or add error handling as needed
           setLoadingCard(null);
         }
       }
@@ -149,7 +144,7 @@ export default function Dashboard() {
                               ? "object-contain w-20 h-20 scale-125"
                               : "object-contain w-20 h-20"
                           }
-                          priority={index < 3} // Prioritize first 3 images
+                          priority={index < 3}
                         />
                       ) : (
                         item.icon
