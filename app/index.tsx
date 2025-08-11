@@ -63,6 +63,7 @@ export default function Homepage() {
         // Store data and navigate
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", formData.email);
+        localStorage.setItem("name", data?.user?.name);
 
         // Use replace instead of push to prevent back button issues
         router.replace("/pages/dashboard");

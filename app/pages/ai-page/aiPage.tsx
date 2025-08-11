@@ -1,10 +1,8 @@
 "use client";
 import React, { useCallback, useState } from "react";
 import { MessageSquare, Camera, FileText, Mic, Loader2 } from "lucide-react";
-import Header from "@/components/header";
 import Breadcrumb from "@/components/breadcrumb";
 import { useRouter } from "next/navigation";
-import Footer from "@/components/footer";
 
 export default function AIPage() {
   const router = useRouter();
@@ -89,8 +87,6 @@ export default function AIPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <Header />
       <Breadcrumb />
 
       {/* Main Content */}
@@ -149,8 +145,6 @@ export default function AIPage() {
           ))}
         </div>
       </main>
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

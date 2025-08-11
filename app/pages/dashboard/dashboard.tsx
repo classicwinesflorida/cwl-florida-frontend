@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ExternalLink,
   BarChart3,
@@ -8,8 +8,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import Image from "next/image";
 
 const zohoLogo = "/zohoo.svg";
@@ -95,7 +93,7 @@ export default function Dashboard() {
   );
 
   // Prefetch internal routes on component mount
-  React.useEffect(() => {
+  useEffect(() => {
     menuItems.forEach((item) => {
       if (item.type === "internal") {
         router.prefetch(item.url);
@@ -105,8 +103,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-      <Header />
-
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -184,7 +180,6 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
