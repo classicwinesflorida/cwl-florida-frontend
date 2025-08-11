@@ -47,6 +47,7 @@ export default function Homepage() {
           body: JSON.stringify(formData),
           // Add signal for request cancellation if needed
           signal: AbortSignal.timeout(10000), // 10 second timeout
+          credentials: "include",
         });
 
         if (!response.ok) {

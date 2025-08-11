@@ -11,6 +11,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import PasswordUpdateForm from "./PasswordUpdateForm";
 
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+
 interface User {
   name: string;
   email: string;
@@ -18,7 +21,9 @@ interface User {
 
 // Pre-load user data to prevent delays
 const preloadUserData = (): User | null => {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined" || typeof localStorage === "undefined") {
+    return null;
+  }
 
   try {
     const userName = localStorage.getItem("name");
@@ -36,8 +41,8 @@ const preloadUserData = (): User | null => {
 };
 
 export default function PerformanceHeader() {
-  // Initialize with preloaded data to prevent loading states
-  const [user, setUser] = useState<User | null>(() => preloadUserData());
+  // Don't initialize with preloaded data to avoid hydration issues
+  const [user, setUser] = useState<User | null>(null);
   const [isProfileOpen, setProfileOpen] = useState<boolean>(false);
   const [showPwdForm, setShowPwdForm] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -50,14 +55,12 @@ export default function PerformanceHeader() {
   useEffect(() => {
     setIsMounted(true);
 
-    // Double-check user data after mount
-    if (!user && typeof window !== "undefined") {
-      const userData = preloadUserData();
-      if (userData) {
-        setUser(userData);
-      }
+    // Load user data only after component mounts (client-side only)
+    const userData = preloadUserData();
+    if (userData) {
+      setUser(userData);
     }
-  }, [user]);
+  }, []);
 
   // Generate user initials
   const initials = useMemo(() => {
@@ -116,10 +119,17 @@ export default function PerformanceHeader() {
     });
   }, []);
 
-  // Handle user logout
-  const handleLogout = useCallback(() => {
+  // Updated logout logic
+  const handleLogout = useCallback(async () => {
     try {
-      if (typeof window !== "undefined") {
+      // Call backend to clear the cookie
+      await fetch(`${BASE_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      // Clear localStorage only if available
+      if (typeof localStorage !== "undefined") {
         localStorage.clear();
       }
       setProfileOpen(false);
