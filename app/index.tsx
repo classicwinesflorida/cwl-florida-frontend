@@ -61,11 +61,7 @@ export default function Homepage() {
         // Don't store token in localStorage since we're using HTTP-only cookies
         // localStorage.setItem("token", data.token); // Remove this line
 
-        // Add a small delay to ensure cookie is set before redirect
-        setTimeout(() => {
-          // Force a full page reload to ensure middleware picks up the cookie
-          window.location.href = "/pages/dashboard";
-        }, 100);
+        router.push("/pages/dashboard");
 
       } catch (error) {
         if (error instanceof Error) {
