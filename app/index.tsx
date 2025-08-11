@@ -3,7 +3,7 @@ import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
 export default function Homepage() {
   const [formData, setFormData] = useState({
@@ -14,7 +14,6 @@ export default function Homepage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  // Memoize the handleChange function to prevent unnecessary re-renders
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -22,17 +21,15 @@ export default function Homepage() {
         ...prev,
         [name]: value,
       }));
-      if (error) setError(""); // Only clear error if it exists
+      if (error) setError("");
     },
     [error]
   );
 
-  // Memoize the handleSubmit function
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
 
-      // Prevent double submissions
       if (isLoading) return;
 
       setIsLoading(true);
@@ -45,9 +42,7 @@ export default function Homepage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-          // Add signal for request cancellation if needed
-          signal: AbortSignal.timeout(10000), // 10 second timeout
-          credentials: "include",
+          credentials: "include", // This is crucial for cookies
         });
 
         if (!response.ok) {
@@ -59,13 +54,19 @@ export default function Homepage() {
 
         const data = await response.json();
 
-        // Store data and navigate
-        localStorage.setItem("token", data.token);
+        // Store minimal data in localStorage (keep for compatibility)
         localStorage.setItem("user", formData.email);
-        localStorage.setItem("name", data?.user?.name);
+        localStorage.setItem("name", data?.user?.name || "");
+        
+        // Don't store token in localStorage since we're using HTTP-only cookies
+        // localStorage.setItem("token", data.token); // Remove this line
 
-        // Use replace instead of push to prevent back button issues
-        router.replace("/pages/dashboard");
+        // Add a small delay to ensure cookie is set before redirect
+        setTimeout(() => {
+          // Force a full page reload to ensure middleware picks up the cookie
+          window.location.href = "/pages/dashboard";
+        }, 100);
+
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
@@ -79,12 +80,11 @@ export default function Homepage() {
     [formData, isLoading, router]
   );
 
-  // Memoize form validation
+  // Rest of your component remains the same...
   const isFormValid = useMemo(() => {
     return formData.email.trim() !== "" && formData.password.trim() !== "";
   }, [formData.email, formData.password]);
 
-  // Memoize button classes to prevent recalculation
   const buttonClasses = useMemo(() => {
     const baseClasses =
       "w-full font-semibold py-3 px-4 rounded-lg transition-colors duration-200";
