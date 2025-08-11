@@ -28,13 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <Header /> */}
-        {/* <main
-          className="h-[86vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-        > */}
-          {children}
-        {/* </main> */}
-        {/* <Footer /> */}
+        {children}
       </body>
     </html>
   );
