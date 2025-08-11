@@ -74,19 +74,16 @@ export default function Dashboard() {
 
   const handleCardClick = useCallback(
     async (item: MenuItem): Promise<void> => {
-      console.log(`Navigating to ${item.title} (${item.type})`);
 
       if (item.type === "external") {
         window.open(item.url, "_blank", "noopener,noreferrer");
       } else if (item.type === "internal") {
-        // Show loading state immediately
         setLoadingCard(item.title);
 
         try {
-          // Use router.push with prefetch
           await router.push(item.url);
-        } catch (error) {
-          console.error("Navigation error:", error);
+        } catch {
+          // Handle navigation error silently or add error handling as needed
           setLoadingCard(null);
         }
       }
