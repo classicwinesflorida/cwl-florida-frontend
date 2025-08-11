@@ -372,7 +372,7 @@ export default function POCreatorClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F7FA] flex flex-col items-center justify-center">
+    <div className="min-h-[75vh] bg-[#F6F7FA] flex flex-col items-center justify-center my-4">
       <div className="w-full max-w-4xl mx-auto">
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#00B3CC] py-3 px-4 flex justify-between items-center">

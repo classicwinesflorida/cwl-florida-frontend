@@ -196,7 +196,7 @@ export default function PerformanceHeader() {
                 }}
               >
                 <Image
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="Tech Sierra Logo"
                   width={80}
                   height={70}

@@ -10,7 +10,9 @@ import {
   FileText,
   ScrollText,
 } from "lucide-react";
+import Header from "@/components/header";
 import Breadcrumb from "@/components/breadcrumb";
+import Footer from "@/components/footer";
 
 interface BookingOption {
   id: string;
@@ -107,6 +109,8 @@ export default function ManualBookingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header */}
+      <Header />
       <Breadcrumb />
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -174,6 +178,8 @@ export default function ManualBookingPage() {
           ))}
         </div>
       </main>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
