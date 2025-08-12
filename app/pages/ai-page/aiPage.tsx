@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { MessageSquare, Camera, FileText, Mic, Loader2 } from "lucide-react";
 import Header from "@/components/header";
 import Breadcrumb from "@/components/breadcrumb";
@@ -57,12 +57,9 @@ export default function AIPage() {
       const route = routes[optionId];
       if (route) {
         console.log("route:", route);
-
-        // Show loading state immediately
         setLoadingOption(optionId);
 
         try {
-          // Use router.push with prefetch
           await router.push(route);
         } catch (error) {
           console.error("Navigation error:", error);
@@ -73,8 +70,7 @@ export default function AIPage() {
     [router]
   );
 
-  // Prefetch routes on component mount
-  React.useEffect(() => {
+  useEffect(() => {
     const routes = [
       "/pages/po-sms-text",
       "/pages/po-sms-screenshot",
@@ -91,14 +87,14 @@ export default function AIPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
       <Header />
-      <div className="h-[5vh]">
-        <Breadcrumb />
-      </div>
+
+      {/* Breadcrumb without extra wrapper */}
+      <Breadcrumb />
 
       {/* Main Content */}
       <main className="max-w-7xl h-[79vh] max-sm:h-[180vh] max-md:h-[180vh] mx-auto px-4 sm:px-6 lg:px-8 py-12 overflow-y-scroll scrollbar-hide [&::-webkit-scrollbar]:hidden flex justify-center items-center">
         <div>
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 mt-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Smart <span style={{ color: "#06A9CA" }}>Invoice Generator</span>
             </h2>
@@ -153,6 +149,7 @@ export default function AIPage() {
           </div>
         </div>
       </main>
+
       {/* Footer */}
       <Footer />
     </div>

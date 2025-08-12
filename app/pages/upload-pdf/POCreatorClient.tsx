@@ -154,12 +154,8 @@ export default function POCreatorClient() {
               Classic Wines Florida - Invoice Creator
             </h2>
             <div className="mb-4">
-              <label className="text-[#00B3CC] font-medium mb-2 flex items-center gap-2">
-                <FileText className="text-[#00B3CC]" size={22} />
-                PDF Upload
-              </label>
               <div className="border-2 border-dashed border-[#00B3CC] rounded-lg p-8 text-center bg-[#F6F7FA]">
-                <p className="text-[#2B3A67] mb-4">
+                <p className="text-[#00B3CC] mb-4">
                   Drag and drop your PDF here
                 </p>
                 <p className="text-[#00B3CC] text-sm mb-4">or</p>

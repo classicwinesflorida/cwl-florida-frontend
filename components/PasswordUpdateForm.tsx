@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useCallback } from "react";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -25,11 +26,21 @@ const PasswordUpdateForm = React.memo(
     const [success, setSuccess] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    // Track visibility for each field
+    const [show, setShow] = useState({
+      currentPassword: false,
+      newPassword: false,
+      confirmPassword: false,
+    });
+
+    const toggleShow = (field: keyof PasswordData) => {
+      setShow((prev) => ({ ...prev, [field]: !prev[field] }));
+    };
+
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setData((prev) => ({ ...prev, [name]: value }));
-        // Clear errors when user starts typing
         if (error) setError("");
       },
       [error]
@@ -41,7 +52,6 @@ const PasswordUpdateForm = React.memo(
       setSuccess("");
       setIsLoading(true);
 
-      // Validation
       if (data.newPassword !== data.confirmPassword) {
         setError("New passwords do not match");
         setIsLoading(false);
@@ -86,19 +96,16 @@ const PasswordUpdateForm = React.memo(
           setTimeout(() => onClose(), 2000);
         }
       } catch (err: unknown) {
-        let msg = "Network error. Please try again.";
-
         type AxiosErrorResponse = {
           response?: {
             data?: {
               message?: string;
               error?: string;
-              [key: string]: unknown;
             };
           };
         };
-
         const errorObj = err as AxiosErrorResponse;
+        let msg = "Network error. Please try again.";
 
         if (
           typeof err === "object" &&
@@ -143,21 +150,29 @@ const PasswordUpdateForm = React.memo(
                   { field: "confirmPassword", label: "Confirm Password" },
                 ] as const
               ).map(({ field, label }) => (
-                <div key={field}>
+                <div key={field} className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     {label}
                   </label>
                   <input
                     name={field}
-                    type="password"
+                    type={show[field] ? "text" : "password"}
                     value={data[field]}
                     onChange={handleChange}
                     required
                     minLength={6}
                     disabled={isLoading}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-1 focus:ring-[#06A9CA] bg-white text-black disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-1 focus:ring-[#06A9CA] bg-white text-black disabled:bg-gray-100 disabled:cursor-not-allowed"
                     placeholder={`Enter ${label.toLowerCase()}`}
                   />
+                  <button
+                    type="button"
+                    onClick={() => toggleShow(field)}
+                    className="absolute inset-y-0 right-3 flex items-start pt-[34px] text-gray-500 hover:text-gray-700"
+                    tabIndex={-1}
+                  >
+                    {show[field] ? <EyeOff /> : <Eye />}
+                  </button>
                 </div>
               ))}
 
@@ -199,5 +214,4 @@ const PasswordUpdateForm = React.memo(
 );
 
 PasswordUpdateForm.displayName = "PasswordUpdateForm";
-
 export default PasswordUpdateForm;

@@ -10,13 +10,19 @@ export default function Footer() {
         <div className="text-center text-gray-500">
           <span className="flex items-center justify-center gap-2">
             Copyright &copy; {currentYear}{" "}
-            <Image
-              src="/logo.svg"
-              alt="Tech Sierra Logo"
-              width={60}
-              height={50}
-              priority
-            />
+            <a
+              href="https://techsierra.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/logo.svg"
+                alt="Tech Sierra Logo"
+                width={60}
+                height={50}
+                priority
+              />
+            </a>
           </span>
         </div>
       </div>
