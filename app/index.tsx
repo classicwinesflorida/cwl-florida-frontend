@@ -2,6 +2,8 @@
 import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import axios from "axios";
+import { AxiosError } from "axios";
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export default function Homepage() {
   const [formData, setFormData] = useState({
@@ -24,7 +26,6 @@ export default function Homepage() {
     [error]
   );
 
-  // Add this utility function for setting cookies (you can also use a library like js-cookie)
   const setCookie = (name: string, value: string, days: number = 7) => {
     const expires = new Date();
     expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
@@ -38,28 +39,28 @@ export default function Homepage() {
       if (isLoading) return;
       setIsLoading(true);
       setError("");
+
       try {
-        const response = await fetch(`${BASE_URL}/api/auth/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-          // Add signal for request cancellation if needed
-          signal: AbortSignal.timeout(10000), // 10 second timeout
-        });
-        if (!response.ok) {
-          const data = await response
-            .json()
-            .catch(() => ({ message: "Login failed" }));
-          throw new Error(data.message || "Login failed");
-        }
-        const data = await response.json();
+        const response = await axios.post(
+          `${BASE_URL}/api/auth/login`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            timeout: 10000, // 10 second timeout
+          }
+        );
+
+        const data = response.data as {
+          token: string;
+          user?: { name?: string };
+        };
 
         // Store data in both localStorage (for client-side access) and cookies (for middleware)
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", formData.email);
-        localStorage.setItem("name", data?.user?.name);
+        localStorage.setItem("name", data?.user?.name || "");
 
         // Set cookie for middleware access
         setCookie("token", data.token, 7); // Expires in 7 days
@@ -68,10 +69,15 @@ export default function Homepage() {
 
         // Use replace instead of push to prevent back button issues
         router.replace("/pages/dashboard");
-      } catch (error) {
-        if (error instanceof Error) {
+      } catch (error: any) {
+        if (error?.response?.data?.message) {
+          // Handle axios error response
+          setError(error.response.data.message);
+        } else if (error?.message) {
+          // Handle error with message property
           setError(error.message);
         } else {
+          // Fallback error message
           setError("Network error. Please try again.");
         }
       } finally {
