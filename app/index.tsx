@@ -3,7 +3,6 @@ import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
-import { AxiosError } from "axios";
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export default function Homepage() {
   const [formData, setFormData] = useState({
@@ -69,13 +68,29 @@ export default function Homepage() {
 
         // Use replace instead of push to prevent back button issues
         router.replace("/pages/dashboard");
-      } catch (error: any) {
-        if (error?.response?.data?.message) {
+      } catch (error: unknown) {
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          "response" in error &&
+          typeof (error as { response?: { data?: { message?: string } } })
+            .response === "object" &&
+          (error as { response?: { data?: { message?: string } } }).response
+            ?.data?.message
+        ) {
           // Handle axios error response
-          setError(error.response.data.message);
-        } else if (error?.message) {
+          setError(
+            (error as { response: { data: { message: string } } }).response.data
+              .message
+          );
+        } else if (
+          typeof error === "object" &&
+          error !== null &&
+          "message" in error &&
+          typeof (error as { message?: string }).message === "string"
+        ) {
           // Handle error with message property
-          setError(error.message);
+          setError((error as { message: string }).message);
         } else {
           // Fallback error message
           setError("Network error. Please try again.");
