@@ -202,7 +202,6 @@ export default function PerformanceHeader() {
                   alt="Tech Sierra Logo"
                   width={150}
                   height={100}
-                  className="scale-200"
                   priority
                 />
               </div>
@@ -244,7 +243,6 @@ export default function PerformanceHeader() {
                   alt="Tech Sierra Logo"
                   width={150}
                   height={100}
-                  className="scale-200"
                   priority
                 />
               </div>
