@@ -400,11 +400,7 @@ export default function POCreatorClient() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 md:gap-6">
                   <div className="space-y-4">
-                    <h2 className="text-lg md:text-xl font-semibold text-[#00B3CC] flex items-center">
-                      <Upload className="mr-2 text-[#00B3CC]" size={20} />
-                      Upload Screenshot
-                    </h2>
-                    <div className="border-2 border-dashed border-[#00B3CC] rounded-lg p-4 md:p-6 text-center">
+                    <div className="border-2 border-dashed border-[#00B3CC] rounded-lg p-8 text-center bg-[#F6F7FA]">
                       <input
                         type="file"
                         accept="image/*"
@@ -416,17 +412,37 @@ export default function POCreatorClient() {
                         htmlFor="file-upload"
                         className="cursor-pointer flex flex-col items-center"
                       >
-                        <Upload size={40} className="text-[#00B3CC] mb-2" />
-                        <span className="text-sm text-[#00B3CC]">
-                          Click to upload screenshot
-                        </span>
+                        {!selectedFile ? (
+                          <>
+                            <div className="text-[#00B3CC] mb-4">
+                              Drag and drop your screenshot here
+                            </div>
+                            <div className="text-[#00B3CC] text-sm mb-4">
+                              or
+                            </div>
+                            <div className="bg-[#00B3CC] hover:bg-[#0090A3] text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                              Select Screenshot File
+                            </div>
+                            <div className="text-[#00B3CC] text-xs mt-2 opacity-80">
+                              Only image files accepted
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex flex-col items-center">
+                            <Upload size={40} className="text-green-600 mb-2" />
+                            <p className="text-green-600 font-medium">
+                              Selected: {selectedFile.name}
+                            </p>
+                            <p className="text-sm text-gray-500 mt-2">
+                              Click to change file
+                            </p>
+                          </div>
+                        )}
                       </label>
-                      {selectedFile && (
-                        <p className="mt-2 text-sm text-green-600">
-                          Selected: {selectedFile.name}
-                        </p>
-                      )}
                     </div>
+                    <p className="text-xs text-[#00B3CC] text-center">
+                      Allowed file types: PNG, JPG, JPEG, GIF, BMP, WebP
+                    </p>
                   </div>
                 </div>
                 <div className="text-center">

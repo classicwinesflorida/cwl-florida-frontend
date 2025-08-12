@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import { ChevronRight, Home } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
@@ -14,9 +15,7 @@ export default function Breadcrumb() {
   const pathname = usePathname();
 
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
-    const pathSegments = pathname
-      .split("/")
-      .filter((segment) => segment !== "");
+    const pathSegments = pathname.split("/").filter((segment) => segment !== "");
     const breadcrumbs: BreadcrumbItem[] = [
       {
         label: "Home",
@@ -25,7 +24,6 @@ export default function Breadcrumb() {
       },
     ];
 
-    // Map path segments to readable labels
     const pathLabels: { [key: string]: string } = {
       pages: "",
       "ai-page": "AI Tools",
@@ -36,16 +34,15 @@ export default function Breadcrumb() {
       "upload-voice": "Voice Upload",
     };
 
-    // Dynamically get AI tool pages from pathLabels (exclude 'pages', 'ai-page', 'order-manually')
     const excludedPages = ["pages", "ai-page", "order-manually"];
     const aiToolPages = Object.keys(pathLabels).filter(
       (page) => pathLabels[page] !== "" && !excludedPages.includes(page)
     );
+
     const isAiToolPage = pathSegments.some((segment) =>
       aiToolPages.includes(segment)
     );
 
-    // If it's an AI tool page, add AI Tools breadcrumb first
     if (isAiToolPage) {
       breadcrumbs.push({
         label: "AI Tools",
@@ -59,7 +56,6 @@ export default function Breadcrumb() {
       currentPath += `/${segment}`;
       const label = pathLabels[segment];
 
-      // Only add breadcrumb if there's a label (skip 'pages' segment)
       if (label) {
         breadcrumbs.push({
           label,
@@ -76,39 +72,33 @@ export default function Breadcrumb() {
 
   const handleBreadcrumbClick = (href: string, isActive: boolean) => {
     if (!isActive) {
-      console.log("Navigating to:", href);
       router.push(href);
     }
   };
 
-  // Don't render breadcrumbs on home page
-  if (pathname === "/") {
-    return null;
-  }
+  if (pathname === "/") return null;
 
   return (
-    <div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <nav className="flex items-center space-x-2 text-sm">
-          {breadcrumbs.map((item, index) => (
-            <div key={index} className="flex items-center space-x-2">
-              {index > 0 && <ChevronRight className="w-4 h-4 text-gray-400" />}
-              <button
-                onClick={() => handleBreadcrumbClick(item.href, item.isActive)}
-                className={`flex items-center space-x-1 transition-colors duration-200 ${
-                  item.isActive
-                    ? "text-gray-900 font-medium cursor-default"
-                    : "text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
-                }`}
-                disabled={item.isActive}
-              >
-                {index === 0 && <Home className="w-4 h-4" />}
-                <span>{item.label}</span>
-              </button>
-            </div>
-          ))}
-        </nav>
-      </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
+      <nav className="flex items-center space-x-2 text-base font-medium text-gray-600">
+        {breadcrumbs.map((item, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            {index > 0 && <ChevronRight className="w-4 h-4 text-gray-400" />}
+            <button
+              onClick={() => handleBreadcrumbClick(item.href, item.isActive)}
+              className={`flex items-center space-x-1 transition-colors duration-200 ${
+                item.isActive
+                  ? "text-gray-900 font-semibold cursor-default"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              disabled={item.isActive}
+            >
+              {item.label === "Home" && <Home className="w-4 h-4 mr-1" />}
+              <span>{item.label}</span>
+            </button>
+          </div>
+        ))}
+      </nav>
     </div>
   );
 }
