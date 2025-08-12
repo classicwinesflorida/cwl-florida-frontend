@@ -195,14 +195,14 @@ export default function PerformanceHeader() {
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-20 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white">
+            <div className="flex items-center space-x-0">
+              <div className="w-40 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white">
                 <Image
-                  src="/classic-logo.svg"
+                  src="/cwl-logo.svg"
                   alt="Tech Sierra Logo"
-                  width={80}
-                  height={70}
-                  className="scale-200" 
+                  width={150}
+                  height={100}
+                  className="scale-200"
                   priority
                 />
               </div>
@@ -226,9 +226,9 @@ export default function PerformanceHeader() {
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Title */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-0">
               <div
-                className="w-20 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-150"
+                className="w-40 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                 onClick={handleLogoClick}
                 role="button"
                 tabIndex={0}
@@ -240,11 +240,11 @@ export default function PerformanceHeader() {
                 }}
               >
                 <Image
-                  src="/classic-logo.svg"
+                  src="/cwl-logo.svg"
                   alt="Tech Sierra Logo"
-                  width={80}
-                  height={70}
-                  className="scale-200" 
+                  width={150}
+                  height={100}
+                  className="scale-200"
                   priority
                 />
               </div>
