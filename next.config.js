@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async rewrites() {
-    const isProd = process.env.NODE_ENV === "production";
+    const isProd = process.env.NEXT_PUBLIC_NODE_ENV === "production";
 
     return [
       {

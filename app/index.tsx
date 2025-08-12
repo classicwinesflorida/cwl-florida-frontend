@@ -2,9 +2,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
-
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export default function Homepage() {
   const [formData, setFormData] = useState({
     email: "",
@@ -13,7 +11,7 @@ export default function Homepage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
-
+  // Memoize the handleChange function to prevent unnecessary re-renders
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -21,20 +19,25 @@ export default function Homepage() {
         ...prev,
         [name]: value,
       }));
-      if (error) setError("");
+      if (error) setError(""); // Only clear error if it exists
     },
     [error]
   );
 
+  // Add this utility function for setting cookies (you can also use a library like js-cookie)
+  const setCookie = (name: string, value: string, days: number = 7) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict;Secure`;
+  };
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-
+      // Prevent double submissions
       if (isLoading) return;
-
       setIsLoading(true);
       setError("");
-
       try {
         const response = await fetch(`${BASE_URL}/api/auth/login`, {
           method: "POST",
@@ -42,27 +45,29 @@ export default function Homepage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-          credentials: "include", // This is crucial for cookies
+          // Add signal for request cancellation if needed
+          signal: AbortSignal.timeout(10000), // 10 second timeout
         });
-
         if (!response.ok) {
           const data = await response
             .json()
             .catch(() => ({ message: "Login failed" }));
           throw new Error(data.message || "Login failed");
         }
-
         const data = await response.json();
 
-        // Store minimal data in localStorage (keep for compatibility)
+        // Store data in both localStorage (for client-side access) and cookies (for middleware)
+        localStorage.setItem("token", data.token);
         localStorage.setItem("user", formData.email);
-        localStorage.setItem("name", data?.user?.name || "");
-        
-        // Don't store token in localStorage since we're using HTTP-only cookies
-        // localStorage.setItem("token", data.token); // Remove this line
+        localStorage.setItem("name", data?.user?.name);
 
-        router.push("/pages/dashboard");
+        // Set cookie for middleware access
+        setCookie("token", data.token, 7); // Expires in 7 days
+        setCookie("user", formData.email, 7);
+        setCookie("name", data?.user?.name || "", 7);
 
+        // Use replace instead of push to prevent back button issues
+        router.replace("/pages/dashboard");
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
@@ -75,32 +80,28 @@ export default function Homepage() {
     },
     [formData, isLoading, router]
   );
-
-  // Rest of your component remains the same...
+  // Memoize form validation
   const isFormValid = useMemo(() => {
     return formData.email.trim() !== "" && formData.password.trim() !== "";
   }, [formData.email, formData.password]);
-
+  // Memoize button classes to prevent recalculation
   const buttonClasses = useMemo(() => {
     const baseClasses =
       "w-full font-semibold py-3 px-4 rounded-lg transition-colors duration-200";
     const enabledClasses =
       "bg-[#06A9CA] hover:bg-[#0891b3] transform hover:-translate-y-0.5";
     const disabledClasses = "bg-gray-300 text-gray-500 cursor-not-allowed";
-
     return `${baseClasses} ${
       !isFormValid || isLoading ? disabledClasses : enabledClasses
     }`;
   }, [isFormValid, isLoading]);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#06A9CA] to-[#0891b3] p-5">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#06A9CA] to-[#0891b3] p-5 text-black">
       <div className="bg-white pt-10 pl-10 pr-10 pb-2 rounded-xl shadow-2xl w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
           <p>Sign in to your Classic Wines account</p>
         </div>
-
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           <div>
             <label htmlFor="email" className="block text-sm font-semibold mb-2">
@@ -118,7 +119,6 @@ export default function Homepage() {
               placeholder="Enter your email"
             />
           </div>
-
           <div>
             <label
               htmlFor="password"
@@ -138,13 +138,11 @@ export default function Homepage() {
               placeholder="Enter your password"
             />
           </div>
-
           {error && (
             <div className="bg-red-50 text-red-600 p-3 rounded-lg border-l-4 border-red-500 text-sm">
               {error}
             </div>
           )}
-
           <button
             type="submit"
             disabled={!isFormValid || isLoading}
@@ -179,7 +177,6 @@ export default function Homepage() {
             )}
           </button>
         </form>
-
         <footer className="text-center py-4 pt-6 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
           Powered by
           <Image
