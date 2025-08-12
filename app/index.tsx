@@ -3,7 +3,7 @@ import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"; // <-- Heroicons
+import { Eye, EyeOff } from "lucide-react";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -40,11 +40,18 @@ export default function Homepage() {
       setError("");
 
       try {
-        const response = await axios.post(`${BASE_URL}/api/auth/login`, formData, {
-          headers: { "Content-Type": "application/json" },
-          timeout: 10000,
-        });
-        const data = response.data as { token: string; user?: { name?: string } };
+        const response = await axios.post(
+          `${BASE_URL}/api/auth/login`,
+          formData,
+          {
+            headers: { "Content-Type": "application/json" },
+            timeout: 10000,
+          }
+        );
+        const data = response.data as {
+          token: string;
+          user?: { name?: string };
+        };
 
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", formData.email);
@@ -60,10 +67,15 @@ export default function Homepage() {
           typeof error === "object" &&
           error !== null &&
           "response" in error &&
-          typeof (error as { response?: { data?: { message?: string } } }).response === "object" &&
-          (error as { response?: { data?: { message?: string } } }).response?.data?.message
+          typeof (error as { response?: { data?: { message?: string } } })
+            .response === "object" &&
+          (error as { response?: { data?: { message?: string } } }).response
+            ?.data?.message
         ) {
-          setError((error as { response: { data: { message: string } } }).response.data.message);
+          setError(
+            (error as { response: { data: { message: string } } }).response.data
+              .message
+          );
         } else if (
           typeof error === "object" &&
           error !== null &&
@@ -123,7 +135,10 @@ export default function Homepage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-semibold mb-2"
+            >
               Password
             </label>
             <div className="relative">
@@ -145,9 +160,9 @@ export default function Homepage() {
                 tabIndex={-1}
               >
                 {showPassword ? (
-                  <EyeSlashIcon className="h-5 w-5" />
+                  <EyeOff className="h-5 w-5" />
                 ) : (
-                  <EyeIcon className="h-5 w-5" />
+                  <Eye className="h-5 w-5" />
                 )}
               </button>
             </div>
@@ -159,7 +174,11 @@ export default function Homepage() {
             </div>
           )}
 
-          <button type="submit" disabled={!isFormValid || isLoading} className={buttonClasses}>
+          <button
+            type="submit"
+            disabled={!isFormValid || isLoading}
+            className={buttonClasses}
+          >
             {isLoading ? (
               <span className="flex items-center justify-center">
                 <svg
