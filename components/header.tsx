@@ -45,6 +45,7 @@ export default function PerformanceHeader() {
   const [isProfileOpen, setProfileOpen] = useState<boolean>(false);
   const [showPwdForm, setShowPwdForm] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [fadeClass, setFadeClass] = useState("");
 
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -117,6 +118,14 @@ export default function PerformanceHeader() {
       return newState;
     });
   }, []);
+
+  const handleClose = () => {
+    setFadeClass("exit");
+    setTimeout(() => {
+      setProfileOpen(false);
+      setFadeClass("");
+    }, 150); // match animation time
+  };
 
   // Updated logout logic
   // Utility function to delete cookies
@@ -329,8 +338,8 @@ export default function PerformanceHeader() {
       {/* Mobile Overlay */}
       {isProfileOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-25 z-40 sm:hidden"
-          onClick={() => setProfileOpen(false)}
+          className={`fixed inset-0 z-40 sm:hidden fade-bg ${fadeClass}`}
+          onClick={handleClose}
           style={{ animation: "fadeIn 150ms ease-out forwards" }}
         />
       )}
