@@ -198,14 +198,15 @@ export default function PerformanceHeader() {
             <div className="flex items-center space-x-3">
               <div className="w-20 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white">
                 <Image
-                  src="/logo.svg"
+                  src="/classic-logo.svg"
                   alt="Tech Sierra Logo"
                   width={80}
                   height={70}
+                  className="scale-200" 
                   priority
                 />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+              <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="w-8 h-8 rounded-full bg-[#06A9CA]"></div>
@@ -239,14 +240,15 @@ export default function PerformanceHeader() {
                 }}
               >
                 <Image
-                  src="/logo.svg"
+                  src="/classic-logo.svg"
                   alt="Tech Sierra Logo"
                   width={80}
                   height={70}
+                  className="scale-200" 
                   priority
                 />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+              <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
             </div>
 
             {/* User Profile Dropdown */}
