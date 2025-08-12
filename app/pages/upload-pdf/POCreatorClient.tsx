@@ -151,7 +151,7 @@ export default function POCreatorClient() {
         <div className="bg-white rounded-b-xl shadow-lg flex flex-col">
           <div className="p-8 flex-1 flex flex-col">
             <h2 className="text-center text-2xl font-bold text-[#00B3CC] mb-6">
-              Classic Wines Florida - Invoice Creator
+              Classic Wines Florida - Po Creator
             </h2>
             <div className="mb-4">
               <label className="text-[#00B3CC] font-medium mb-2 flex items-center gap-2">

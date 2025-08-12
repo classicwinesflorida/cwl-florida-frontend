@@ -14,7 +14,7 @@ export default function AIPage() {
     {
       id: "text",
       title: "Text Message Reader",
-      description: "Enter invoice details here...",
+      description: "Generate PO by entering details via text message",
       icon: <MessageSquare className="w-8 h-8" />,
       gradient: "from-blue-500 to-cyan-500",
       acceptedFiles: "text/*",
@@ -22,7 +22,7 @@ export default function AIPage() {
     {
       id: "screenshot",
       title: "Screenshot Reader",
-      description: "Upload screenshot of invoice or proof",
+      description: "Generate PO by uploading a screenshot",
       icon: <Camera className="w-8 h-8" />,
       gradient: "from-green-500 to-teal-500",
       acceptedFiles: "image/*",
@@ -30,7 +30,7 @@ export default function AIPage() {
     {
       id: "pdf",
       title: "PDF Reader",
-      description: "Upload PDF invoice or attachment",
+      description: "Generate PO by uploading a PDF file",
       icon: <FileText className="w-8 h-8" />,
       gradient: "from-purple-500 to-pink-500",
       acceptedFiles: ".pdf",
@@ -38,7 +38,7 @@ export default function AIPage() {
     {
       id: "voice",
       title: "Voice Recording Reader",
-      description: "Record or upload voice notes for invoice detail",
+      description: "Generate PO by recording or uploading audio",
       icon: <Mic className="w-8 h-8" />,
       gradient: "from-orange-500 to-red-500",
       acceptedFiles: "audio/*",
