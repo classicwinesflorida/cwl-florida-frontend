@@ -96,7 +96,7 @@ export default function AIPage() {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl h-[79vh] mx-auto px-4 sm:px-6 lg:px-8 py-12 overflow-y-scroll scrollbar-hide [&::-webkit-scrollbar]:hidden flex justify-center items-center">
+      <main className="max-w-7xl h-[79vh] max-sm:h-[180vh] max-md:h-[180vh] mx-auto px-4 sm:px-6 lg:px-8 py-12 overflow-y-scroll scrollbar-hide [&::-webkit-scrollbar]:hidden flex justify-center items-center">
         <div>
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
