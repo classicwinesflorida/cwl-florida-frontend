@@ -1,42 +1,46 @@
-// middleware.ts
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-// List your protected routes
-const protectedRoutes = [
-  "/pages/dashboard",
+// Define protected routes that require authentication
+const protectedRoutes = [  "/pages/dashboard",
   "/pages/order-manually", 
   "/pages/ai-page",
   "/pages/po-sms-text",
   "/pages/po-sms-screenshot",
   "/pages/upload-pdf",
-  "/pages/upload-voice"
-];
+  "/pages/upload-voice"];
+
+// Define public routes that should redirect to dashboard if user is logged in
+const publicRoutes = ['/', '/login', '/signup'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // Check if the current path is protected
-  if (protectedRoutes.some(route => pathname.startsWith(route))) {
-    // Check for token in cookies (HTTP-only cookie)
-    const token = request.cookies.get("token");
-    
-    if (!token || !token.value) {
-      console.log(`No token found for protected route: ${pathname}`);
-      // Create redirect URL to login page
-      const redirectUrl = new URL("/", request.url);
-      return NextResponse.redirect(redirectUrl);
-    }
-    
-    // Optional: Verify token validity here if needed
-    // For now, just check if token exists
-    console.log(`Token found for protected route: ${pathname}`);
+  
+  // Get token from cookies (we'll need to modify login to use cookies instead of localStorage)
+  const token = request.cookies.get('token')?.value;
+  
+  // Check if the current path is a protected route
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  
+  // Check if the current path is a public route
+  const isPublicRoute = publicRoutes.includes(pathname);
+  
+  // If accessing a protected route without a token, redirect to login
+  if (isProtectedRoute && !token) {
+    const loginUrl = new URL('/', request.url);
+    return NextResponse.redirect(loginUrl);
   }
-
+  
+  // If accessing a public route with a token, redirect to dashboard
+  if (isPublicRoute && token) {
+    const dashboardUrl = new URL('/pages/dashboard', request.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
+  
   return NextResponse.next();
 }
 
-// Configure which paths this middleware should run on
+// Configure which paths the middleware should run on
 export const config = {
   matcher: [
     /*
@@ -45,8 +49,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public folder files
+     * - public files (images, etc.)
      */
     '/((?!api|_next/static|_next/image|favicon.ico|logo.svg|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)',
   ],
-}
+};

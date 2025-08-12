@@ -11,7 +11,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import PasswordUpdateForm from "./PasswordUpdateForm";
 
-
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface User {
@@ -120,6 +119,12 @@ export default function PerformanceHeader() {
   }, []);
 
   // Updated logout logic
+  // Utility function to delete cookies
+  const deleteCookie = (name: string) => {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+  };
+
+  // Updated handleLogout function - replace your existing one
   const handleLogout = useCallback(async () => {
     try {
       // Call backend to clear the cookie
@@ -132,10 +137,29 @@ export default function PerformanceHeader() {
       if (typeof localStorage !== "undefined") {
         localStorage.clear();
       }
+
+      // Clear client-side cookies as well (for extra safety)
+      if (typeof document !== "undefined") {
+        deleteCookie("token");
+        deleteCookie("user");
+        deleteCookie("name");
+      }
+
       setProfileOpen(false);
       router.push("/");
     } catch (error) {
       console.error("Error during logout:", error);
+
+      // Even if backend call fails, clear client-side data
+      if (typeof localStorage !== "undefined") {
+        localStorage.clear();
+      }
+      if (typeof document !== "undefined") {
+        deleteCookie("token");
+        deleteCookie("user");
+        deleteCookie("name");
+      }
+
       router.push("/");
     }
   }, [router]);
@@ -188,7 +212,7 @@ export default function PerformanceHeader() {
 
   return (
     <>
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 h-[8vh]">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Title */}
