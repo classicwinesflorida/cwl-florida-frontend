@@ -3,16 +3,17 @@ import { useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export default function Homepage() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // NEW STATE
   const router = useRouter();
-  // Memoize the handleChange function to prevent unnecessary re-renders
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -20,7 +21,7 @@ export default function Homepage() {
         ...prev,
         [name]: value,
       }));
-      if (error) setError(""); // Only clear error if it exists
+      if (error) setError("");
     },
     [error]
   );
@@ -34,7 +35,6 @@ export default function Homepage() {
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      // Prevent double submissions
       if (isLoading) return;
       setIsLoading(true);
       setError("");
@@ -44,29 +44,23 @@ export default function Homepage() {
           `${BASE_URL}/api/auth/login`,
           formData,
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            timeout: 10000, // 10 second timeout
+            headers: { "Content-Type": "application/json" },
+            timeout: 10000,
           }
         );
-
         const data = response.data as {
           token: string;
           user?: { name?: string };
         };
 
-        // Store data in both localStorage (for client-side access) and cookies (for middleware)
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", formData.email);
         localStorage.setItem("name", data?.user?.name || "");
 
-        // Set cookie for middleware access
-        setCookie("token", data.token, 7); // Expires in 7 days
+        setCookie("token", data.token, 7);
         setCookie("user", formData.email, 7);
         setCookie("name", data?.user?.name || "", 7);
 
-        // Use replace instead of push to prevent back button issues
         router.replace("/pages/dashboard");
       } catch (error: unknown) {
         if (
@@ -78,7 +72,6 @@ export default function Homepage() {
           (error as { response?: { data?: { message?: string } } }).response
             ?.data?.message
         ) {
-          // Handle axios error response
           setError(
             (error as { response: { data: { message: string } } }).response.data
               .message
@@ -89,10 +82,8 @@ export default function Homepage() {
           "message" in error &&
           typeof (error as { message?: string }).message === "string"
         ) {
-          // Handle error with message property
           setError((error as { message: string }).message);
         } else {
-          // Fallback error message
           setError("Network error. Please try again.");
         }
       } finally {
@@ -101,11 +92,11 @@ export default function Homepage() {
     },
     [formData, isLoading, router]
   );
-  // Memoize form validation
+
   const isFormValid = useMemo(() => {
     return formData.email.trim() !== "" && formData.password.trim() !== "";
   }, [formData.email, formData.password]);
-  // Memoize button classes to prevent recalculation
+
   const buttonClasses = useMemo(() => {
     const baseClasses =
       "w-full font-semibold py-3 px-4 rounded-lg transition-colors duration-200";
@@ -116,6 +107,7 @@ export default function Homepage() {
       !isFormValid || isLoading ? disabledClasses : enabledClasses
     }`;
   }, [isFormValid, isLoading]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#06A9CA] to-[#0891b3] p-5 text-black">
       <div className="bg-white pt-10 pl-10 pr-10 pb-2 rounded-xl shadow-2xl w-full max-w-md">
@@ -123,6 +115,7 @@ export default function Homepage() {
           <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
           <p>Sign in to your Classic Wines account</p>
         </div>
+
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
           <div>
             <label htmlFor="email" className="block text-sm font-semibold mb-2">
@@ -140,6 +133,7 @@ export default function Homepage() {
               placeholder="Enter your email"
             />
           </div>
+
           <div>
             <label
               htmlFor="password"
@@ -147,23 +141,39 @@ export default function Homepage() {
             >
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              autoComplete="current-password"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200"
-              placeholder="Enter your password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                autoComplete="current-password"
+                className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#06A9CA] focus:ring-[#06A9CA] focus:ring-opacity-20 focus:ring-2 transition-colors duration-200"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
+
           {error && (
             <div className="bg-red-50 text-red-600 p-3 rounded-lg border-l-4 border-red-500 text-sm">
               {error}
             </div>
           )}
+
           <button
             type="submit"
             disabled={!isFormValid || isLoading}
@@ -198,6 +208,7 @@ export default function Homepage() {
             )}
           </button>
         </form>
+
         <footer className="text-center py-4 pt-6 text-[#00B3CC] text-sm font-medium opacity-80 flex items-center justify-center">
           Powered by
           <Image

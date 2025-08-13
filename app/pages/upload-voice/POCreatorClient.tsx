@@ -7,9 +7,13 @@ import {
   CheckCircle,
   Mic,
   StopCircle,
+  Upload,
+  X,
+  AlertTriangle,
+  Volume2,
+  Lightbulb,
 } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown";
-import { useSearchParams } from "next/navigation";
 
 interface POItem {
   id: string;
@@ -90,18 +94,9 @@ interface ApiResponse {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-function toTitleCase(str: string): string {
-  if (!str) return "";
-  return str.replace(/\w\S*/g, (txt: string) =>
-    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
-}
-
 export const dynamic = "force-dynamic";
 
 export default function POCreatorClient() {
-  const searchParams = useSearchParams();
-  const userName = searchParams.get("user_name");
   const [inputText, setInputText] = useState<string>("");
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [poData, setPOData] = useState<POData | null>(null);
@@ -114,6 +109,8 @@ export default function POCreatorClient() {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   // Generate unique ID for new items
   const generateUniqueId = (): string => {
@@ -192,14 +189,18 @@ export default function POCreatorClient() {
       setIsRecording(true);
     } catch (error) {
       console.error("Recording error:", error);
-      alert("Could not start recording. Please ensure microphone access is granted.");
+      alert(
+        "Could not start recording. Please ensure microphone access is granted."
+      );
     }
   };
 
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
+      mediaRecorderRef.current.stream
+        .getTracks()
+        .forEach((track) => track.stop());
       setIsRecording(false);
     }
   };
@@ -213,7 +214,8 @@ export default function POCreatorClient() {
   // --- Process Voice Data ---
   const processVoiceData = async () => {
     if (!audioFile && !inputText.trim()) {
-      alert("Please either record/upload voice or enter text");
+      setErrorMessage("Please either record/upload voice or enter text");
+      setShowErrorModal(true);
       return;
     }
     setIsProcessing(true);
@@ -231,7 +233,11 @@ export default function POCreatorClient() {
       });
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Failed to process voice data: ${response.status} - ${errorText}`);
+        setErrorMessage(
+          `Failed to process voice data: ${response.status} - ${errorText}`
+        );
+        setShowErrorModal(true);
+        return;
       }
       const data: ApiResponse = await response.json();
 
@@ -267,9 +273,12 @@ export default function POCreatorClient() {
 
       setIsEditing(true);
     } catch (err: unknown) {
-      // No error state, just alert
-      if (err instanceof Error) alert(err.message);
-      else alert("Unknown error occurred.");
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage("Unknown error occurred while processing audio.");
+      }
+      setShowErrorModal(true);
     } finally {
       setIsProcessing(false);
     }
@@ -426,80 +435,231 @@ export default function POCreatorClient() {
     setIsEditing(false);
   };
 
-  // --- Top Bar Customer Name Logic ---
-  const customerName =
-    poData?.customerName ||
-    poData?.customerDetails?.name ||
-    userName;
+  const ErrorModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center">
+              <AlertTriangle className="text-red-500 mr-3" size={24} />
+              <h3 className="text-lg font-semibold text-red-600">
+                Processing Error
+              </h3>
+            </div>
+            <button
+              onClick={() => setShowErrorModal(false)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          <div className="mb-6">
+            <p className="text-red-600 mb-4">{errorMessage}</p>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <div className="flex items-center mb-3">
+              <Lightbulb className="text-blue-500 mr-2" size={20} />
+              <h4 className="font-semibold text-blue-700">
+                Audio Recording Tips
+              </h4>
+            </div>
+            <p className="text-blue-700 text-sm mb-3">
+              For best results, please include the following information in your
+              audio:
+            </p>
+            <ul className="text-blue-700 text-sm space-y-2">
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>
+                  <strong>Customer name:</strong>{" "}
+                  {`"Create purchase order for [Customer Name]"`}
+                </span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>
+                  <strong>Items needed:</strong>{" "}
+                  {`"I need 10 bottles of
+                  Chardonnay and 5 cases of Cabernet"`}
+                </span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>
+                  <strong>Quantities:</strong>{" "}
+                  {`Specify exact numbers for each
+                  item`}
+                </span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>
+                  <strong>Unit prices:</strong>{" "}
+                  {`Include prices if known "at $25
+                  per bottle"`}
+                </span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>
+                  <strong>Order date:</strong>{" "}
+                  {`"Needed by [date]" or "For
+                  delivery on [date]"`}
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div className="flex items-start">
+              <Volume2 className="text-green-500 mr-2 mt-0.5" size={18} />
+              <div>
+                <h4 className="font-semibold text-green-700 mb-2">
+                  Example Audio Script:
+                </h4>
+                <p className="text-green-700 text-sm italic">
+                  {`"Hi, I need to create a purchase order for ABC Wine Store. I
+                  need 12 bottles of 2020 Cabernet Sauvignon at $30 each, 6
+                  bottles of Pinot Noir at $25 each, and 24 bottles of house
+                  Chardonnay at $18 each. This order is for delivery next
+                  Friday."`}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => setShowErrorModal(false)}
+              className="flex-1 px-4 py-2 bg-[#00B3CC] text-white rounded-lg hover:bg-[#0090A3] font-medium"
+            >
+              Try Again
+            </button>
+            <button
+              onClick={() => {
+                setShowErrorModal(false);
+                resetForm();
+              }}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
+            >
+              Start Over
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-[75vh] bg-[#F6F7FA] flex flex-col items-center justify-center my-4">
+      {/*Error Modal */}
+      {showErrorModal && <ErrorModal />}
       <div className="w-full max-w-4xl mx-auto">
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#00B3CC] py-3 px-4 flex justify-between items-center">
-          <h2 className="text-white text-lg font-semibold text-center flex-1">
+          {/* <h2 className="text-white text-lg font-semibold text-center flex-1">
             {customerName
               ? `${toTitleCase(customerName)} Dashboard`
               : "Customer Dashboard"}
+          </h2> */}
+          <h2 className="text-white text-lg font-semibold text-center flex-1">
+            Audio Reader
           </h2>
         </div>
         {/* Main Card */}
         <div className="bg-white rounded-b-xl shadow-lg flex flex-col">
           <div className="p-4 md:p-6 flex-1 flex flex-col">
-            <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
-              Classic Wines Florida - Invoice Creator
-            </h1>
-
             {/* Voice Upload UI */}
             {!poData && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 md:gap-6">
                   <div className="space-y-4">
-                    <h2 className="text-lg md:text-xl font-semibold text-[#00B3CC] flex items-center">
-                      <Mic className="mr-2 text-[#00B3CC]" size={20} />
-                      Voice Order
-                    </h2>
-                    <div className="flex justify-between items-center space-y-3">
-                      <div className="flex space-x-3">
-                        <button
-                          onClick={isRecording ? stopRecording : startRecording}
-                          className={`flex items-center justify-center px-4 py-2 rounded-lg font-medium ${
-                            isRecording
-                              ? "bg-[#EF4444] hover:bg-[#dc2626] text-white"
-                              : "bg-[#00B3CC] hover:bg-[#0090A3] text-white"
-                          }`}
-                        >
-                          {isRecording ? (
-                            <>
-                              <StopCircle className="mr-2" size={18} />
-                              Stop Recording
-                            </>
-                          ) : (
-                            <>
-                              <Mic className="mr-2" size={18} />
-                              Start Recording
-                            </>
-                          )}
-                        </button>
-                        {audioFile && (
-                          <div className="flex items-center text-sm text-[#22C55E]">
-                            <CheckCircle className="mr-1" size={16} />
-                            Audio recorded
+                    <div className="border-2 border-dashed border-[#00B3CC] rounded-lg p-8 text-center bg-[#F6F7FA]">
+                      <input
+                        type="file"
+                        accept="audio/*"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        id="file-upload"
+                      />
+                      {!audioFile ? (
+                        <>
+                          <div className="text-[#00B3CC] mb-4">
+                            Drag and drop your audio file here
                           </div>
-                        )}
-                      </div>
-                      <div className="relative">
-                        <label className="block text-sm font-medium text-[#00B3CC] mb-1">
-                          Or upload audio file:
+                          <div className="text-[#00B3CC] text-sm mb-4">or</div>
+                          <div className="flex flex-col items-center space-y-4">
+                            <label
+                              htmlFor="file-upload"
+                              className="cursor-pointer bg-[#00B3CC] hover:bg-[#0090A3] text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+                            >
+                              Select Audio File
+                            </label>
+                            <div className="text-[#00B3CC] text-sm mb-4">
+                              or
+                            </div>
+                            <button
+                              onClick={
+                                isRecording ? stopRecording : startRecording
+                              }
+                              className={`flex items-center justify-center px-4 py-2 rounded-lg font-medium relative ${
+                                isRecording
+                                  ? "bg-[#EF4444] hover:bg-[#dc2626] text-white"
+                                  : "bg-[#00B3CC] hover:bg-[#0090A3] text-white"
+                              }`}
+                            >
+                              {isRecording ? (
+                                <>
+                                  <div className="relative">
+                                    <StopCircle className="mr-2" size={18} />
+                                    {/* Recording animation - pulsing red circle */}
+                                    <div className="absolute -top-0.5 -left-0.5 w-5 h-5 bg-red-400 rounded-full animate-ping opacity-75"></div>
+                                    <div className="absolute -top-0.5 -left-0.5 w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                                  </div>
+                                  Stop Recording
+                                </>
+                              ) : (
+                                <>
+                                  <Mic className="mr-2" size={18} />
+                                  Start Recording
+                                </>
+                              )}
+                            </button>
+                            {/* Recording status indicator */}
+                            {isRecording && (
+                              <div className="flex items-center text-red-500 text-sm font-medium animate-pulse">
+                                <div className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-ping"></div>
+                                Recording in progress...
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      ) : (
+                        <label
+                          htmlFor="file-upload"
+                          className="cursor-pointer flex flex-col items-center"
+                        >
+                          <Upload size={40} className="text-green-600 mb-2" />
+                          <p className="text-green-600 font-medium">
+                            Selected: {audioFile.name}
+                          </p>
+                          <p className="text-sm text-gray-500 mt-2">
+                            Click to change file
+                          </p>
                         </label>
-                        <input
-                          type="file"
-                          accept="audio/*"
-                          onChange={handleFileUpload}
-                          className="block w-full text-sm text-[#2B3A67] file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#00B3CC] file:text-white hover:file:bg-[#0090A3]"
-                        />
-                      </div>
+                      )}
+                      {audioFile && (
+                        <div className="flex items-center justify-center text-sm text-[#22C55E] mt-4">
+                          <CheckCircle className="mr-1" size={16} />
+                          Audio recorded
+                        </div>
+                      )}
                     </div>
+                    <p className="text-xs text-red-600 text-center">
+                      Allowed file types: MP3, WAV, M4A, OGG
+                    </p>
                   </div>
                 </div>
                 <div className="text-center">
@@ -584,8 +744,8 @@ export default function POCreatorClient() {
                                   email: option.customer.email || "",
                                   address: option.customer.billing_address
                                     ? `${
-                                        option.customer.billing_address.address ||
-                                        ""
+                                        option.customer.billing_address
+                                          .address || ""
                                       }, ${
                                         option.customer.billing_address.city ||
                                         ""
@@ -606,7 +766,8 @@ export default function POCreatorClient() {
                         )
                       ) : (
                         <p className="text-[#00B3CC] text-sm md:text-base">
-                          {poData.customerDetails.name || "No customer selected"}
+                          {poData.customerDetails.name ||
+                            "No customer selected"}
                         </p>
                       )}
                     </div>

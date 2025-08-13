@@ -45,6 +45,7 @@ export default function PerformanceHeader() {
   const [isProfileOpen, setProfileOpen] = useState<boolean>(false);
   const [showPwdForm, setShowPwdForm] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [fadeClass, setFadeClass] = useState("");
 
   const modalRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -118,6 +119,14 @@ export default function PerformanceHeader() {
     });
   }, []);
 
+  const handleClose = () => {
+    setFadeClass("exit");
+    setTimeout(() => {
+      setProfileOpen(false);
+      setFadeClass("");
+    }, 150); // match animation time
+  };
+
   // Updated logout logic
   // Utility function to delete cookies
   const deleteCookie = (name: string) => {
@@ -186,17 +195,17 @@ export default function PerformanceHeader() {
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-20 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white">
+            <div className="flex items-center space-x-0">
+              <div className="w-40 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white">
                 <Image
-                  src="/logo.svg"
+                  src="/cwl-logo.svg"
                   alt="Tech Sierra Logo"
-                  width={80}
+                  width={150}
                   height={70}
                   priority
+                  // style={{ backgroundColor: "black", borderRadius: "8px" }}
                 />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="w-8 h-8 rounded-full bg-[#06A9CA]"></div>
@@ -216,9 +225,9 @@ export default function PerformanceHeader() {
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Title */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-0">
               <div
-                className="w-20 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-150"
+                className="w-40 h-16 rounded-lg overflow-hidden flex items-center justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                 onClick={handleLogoClick}
                 role="button"
                 tabIndex={0}
@@ -230,14 +239,14 @@ export default function PerformanceHeader() {
                 }}
               >
                 <Image
-                  src="/logo.svg"
+                  src="/cwl-logo.svg"
                   alt="Tech Sierra Logo"
-                  width={80}
-                  height={70}
+                  width={150}
+                  height={100}
                   priority
+                  // style={{ backgroundColor: "black", borderRadius: "8px" }}
                 />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
             </div>
 
             {/* User Profile Dropdown */}
@@ -329,8 +338,8 @@ export default function PerformanceHeader() {
       {/* Mobile Overlay */}
       {isProfileOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-25 z-40 sm:hidden"
-          onClick={() => setProfileOpen(false)}
+          className={`fixed inset-0 z-40 sm:hidden fade-bg ${fadeClass}`}
+          onClick={handleClose}
           style={{ animation: "fadeIn 150ms ease-out forwards" }}
         />
       )}
