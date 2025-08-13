@@ -14,7 +14,6 @@ import {
   Lightbulb,
 } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown";
-import { useSearchParams } from "next/navigation";
 
 interface POItem {
   id: string;
@@ -95,19 +94,9 @@ interface ApiResponse {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-function toTitleCase(str: string): string {
-  if (!str) return "";
-  return str.replace(
-    /\w\S*/g,
-    (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
-}
-
 export const dynamic = "force-dynamic";
 
 export default function POCreatorClient() {
-  const searchParams = useSearchParams();
-  const userName = searchParams.get("user_name");
   const [inputText, setInputText] = useState<string>("");
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [poData, setPOData] = useState<POData | null>(null);
@@ -563,10 +552,6 @@ export default function POCreatorClient() {
     </div>
   );
 
-  // --- Top Bar Customer Name Logic ---
-  const customerName =
-    poData?.customerName || poData?.customerDetails?.name || userName;
-
   return (
     <div className="min-h-[75vh] bg-[#F6F7FA] flex flex-col items-center justify-center my-4">
       {/*Error Modal */}
@@ -574,19 +559,18 @@ export default function POCreatorClient() {
       <div className="w-full max-w-4xl mx-auto">
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#00B3CC] py-3 px-4 flex justify-between items-center">
-          <h2 className="text-white text-lg font-semibold text-center flex-1">
+          {/* <h2 className="text-white text-lg font-semibold text-center flex-1">
             {customerName
               ? `${toTitleCase(customerName)} Dashboard`
               : "Customer Dashboard"}
+          </h2> */}
+          <h2 className="text-white text-lg font-semibold text-center flex-1">
+            Audio Reader
           </h2>
         </div>
         {/* Main Card */}
         <div className="bg-white rounded-b-xl shadow-lg flex flex-col">
           <div className="p-4 md:p-6 flex-1 flex flex-col">
-            <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
-              Classic Wines Florida - Invoice Creator
-            </h1>
-
             {/* Voice Upload UI */}
             {!poData && (
               <div className="space-y-6">
@@ -613,6 +597,9 @@ export default function POCreatorClient() {
                             >
                               Select Audio File
                             </label>
+                            <div className="text-[#00B3CC] text-sm mb-4">
+                              or
+                            </div>
                             <button
                               onClick={
                                 isRecording ? stopRecording : startRecording
@@ -648,9 +635,6 @@ export default function POCreatorClient() {
                               </div>
                             )}
                           </div>
-                          <div className="text-[#00B3CC] text-xs mt-4 opacity-80">
-                            Only audio files accepted
-                          </div>
                         </>
                       ) : (
                         <label
@@ -673,7 +657,7 @@ export default function POCreatorClient() {
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-[#00B3CC] text-center">
+                    <p className="text-xs text-red-600 text-center">
                       Allowed file types: MP3, WAV, M4A, OGG
                     </p>
                   </div>

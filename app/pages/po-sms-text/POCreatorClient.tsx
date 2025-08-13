@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { FileText, Edit3, Send, CheckCircle } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown";
-import { useSearchParams } from "next/navigation";
 
 interface POItem {
   id: string;
@@ -55,21 +54,11 @@ interface DropdownOption {
   customer?: Customer;
 }
 
-function toTitleCase(str: string): string {
-  if (!str) return "";
-  return str.replace(
-    /\w\S*/g,
-    (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
-}
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const dynamic = "force-dynamic";
 
 export default function POCreatorClient() {
-  const searchParams = useSearchParams();
-  const userName = searchParams.get("user_name");
   const [inputText, setInputText] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [poData, setPOData] = useState<POData | null>(null);
@@ -376,34 +365,36 @@ export default function POCreatorClient() {
       <div className="w-full max-w-4xl mx-auto">
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#00B3CC] py-3 px-4 flex justify-between items-center">
-          <h2 className="text-white text-lg font-semibold text-center flex-1">
+          {/* <h2 className="text-white text-lg font-semibold text-center flex-1">
             {userName
               ? `${toTitleCase(userName)} Dashboard`
               : "Customer Dashboard"}
+          </h2> */}
+          <h2 className="text-white text-lg font-semibold text-center flex-1">
+            Text Message Reader
           </h2>
         </div>
         {/* Main Card */}
         <div className="bg-white rounded-b-xl shadow-lg flex flex-col">
           <div className="p-4 md:p-6 flex-1 flex flex-col">
-            <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
+            {/* <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
                Classic Wines Florida - Po Cretor
-            </h1>
+            </h1> */}
 
             {!poData && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 md:gap-6">
                   <div className="space-y-4">
-                    <label className="text-[#00B3CC] font-medium mb-2 flex items-center gap-2">
-                      <FileText className="mr-2 text-[#00B3CC]" size={20} />
-                      Paste SMS Text
-                    </label>
                     <textarea
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
-                      placeholder="Paste your SMS text here...&#10;&#10;Example:&#10;Royal Stage 1L: 5&#10;Old Monk 500ml: 10"
+                      placeholder="Paste your SMS text here...&#10;&#10;Example:&#10;Hi John, please take my order for 10 bottles of Mateo Sancerre and 10 bottles of Little Boat Cabernet Sauvignon from Dry Creek Valley."
                       className="w-full h-32 p-3 border border-[#00B3CC] rounded-lg focus:ring-2 focus:ring-[#00B3CC] focus:border-[#00B3CC] text-[#00B3CC] placeholder-[#00B3CC] text-sm md:text-base"
                     />
                   </div>
+                  <p className="text-xs text-red-600 text-center">
+                    Paste SMS Text
+                  </p>
                 </div>
                 <div className="text-center">
                   <button

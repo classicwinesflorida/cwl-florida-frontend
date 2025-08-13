@@ -8,14 +8,6 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-
-function toTitleCase(str: string): string {
-  if (!str) return "";
-  return str.replace(/\w\S*/g, (txt: string) =>
-    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
-}
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -58,8 +50,6 @@ export default function POCreatorClient() {
   const [processingResult, setProcessingResult] =
     useState<ProcessingResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const searchParams = useSearchParams();
-  const userName = searchParams.get("user_name") || null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -141,18 +131,18 @@ export default function POCreatorClient() {
       <div className="w-full max-w-4xl mx-auto">
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#00B3CC] py-3 px-4 flex justify-between items-center">
-          <h2 className="text-white text-lg font-semibold text-center flex-1">
+          {/* <h2 className="text-white text-lg font-semibold text-center flex-1">
             {userName
               ? `${toTitleCase(userName)} Dashboard`
               : "Customer Dashboard"}
+          </h2> */}
+          <h2 className="text-white text-lg font-semibold text-center flex-1">
+            PDF Reader
           </h2>
         </div>
         {/* Main Card */}
         <div className="bg-white rounded-b-xl shadow-lg flex flex-col">
           <div className="p-8 flex-1 flex flex-col">
-            <h2 className="text-center text-2xl font-bold text-[#00B3CC] mb-6">
-              Classic Wines Florida - Po Creator
-            </h2>
             <div className="mb-4">
               <div className="border-2 border-dashed border-[#00B3CC] rounded-lg p-8 text-center bg-[#F6F7FA]">
                 <p className="text-[#00B3CC] mb-4">
@@ -169,10 +159,10 @@ export default function POCreatorClient() {
                     disabled={isProcessing}
                   />
                 </label>
-                <p className="text-[#00B3CC] text-xs mt-2 opacity-80">
-                  Only PDF files accepted
-                </p>
               </div>
+              <p className="text-xs text-red-600 text-center mt-4">
+                Only PDF files accepted
+              </p>
             </div>
             {/* Error Message */}
             {error && (

@@ -38,7 +38,7 @@ export default function ManualBookingPage() {
     {
       id: "customer-list",
       title: "Customer List",
-      description: "View and manage existing customers",
+      description: "List of all existing customers",
       icon: <Users className="w-8 h-8" />,
       gradient: "from-blue-400 to-blue-600",
       type: "list",
@@ -56,7 +56,7 @@ export default function ManualBookingPage() {
     {
       id: "vendor-list",
       title: "Vendor List",
-      description: "View and manage existing vendors",
+      description: "List of all existing vendors",
       icon: <Building2 className="w-8 h-8" />,
       gradient: "from-green-400 to-green-600",
       type: "list",
@@ -74,7 +74,7 @@ export default function ManualBookingPage() {
     {
       id: "item-lists",
       title: "Item Lists",
-      description: "View and manage inventory items",
+      description: "List of all inventory items",
       icon: <List className="w-8 h-8" />,
       gradient: "from-purple-400 to-purple-600",
       type: "list",
@@ -92,7 +92,7 @@ export default function ManualBookingPage() {
     {
       id: "invoice-lists",
       title: "Invoice Lists",
-      description: "View and manage all invoices",
+      description: "List of all invoices",
       icon: <ScrollText className="w-8 h-8" />,
       gradient: "from-orange-400 to-red-600",
       type: "list",
@@ -116,11 +116,11 @@ export default function ManualBookingPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Manual <span style={{ color: "#06A9CA" }}>Booking System</span>
+            Manual <span style={{ color: "#06A9CA" }}>Booking</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comprehensive tools for managing your business operations manually.
-            Create and manage customers, vendors, inventory, and invoices.
+            All-in-one manual tools to manage customers, vendors, inventory, and
+            invoices.
           </p>
         </div>
 
