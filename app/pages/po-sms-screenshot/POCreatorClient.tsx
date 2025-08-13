@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { Upload, FileText, Edit3, Send, CheckCircle } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown";
-import { useSearchParams } from "next/navigation";
 
 interface POItem {
   id: string;
@@ -55,21 +54,11 @@ interface DropdownOption {
   customer?: Customer;
 }
 
-function toTitleCase(str: string): string {
-  if (!str) return "";
-  return str.replace(
-    /\w\S*/g,
-    (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
-}
-
 export const dynamic = "force-dynamic";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function POCreatorClient() {
-  const searchParams = useSearchParams();
-  const userName = searchParams.get("user_name");
   const [inputText, setInputText] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [poData, setPOData] = useState<POData | null>(null);
@@ -384,18 +373,12 @@ export default function POCreatorClient() {
         {/* Top Bar */}
         <div className="rounded-t-xl bg-[#00B3CC] py-3 px-4 flex justify-between items-center">
           <h2 className="text-white text-lg font-semibold text-center flex-1">
-            {userName
-              ? `${toTitleCase(userName)} Dashboard`
-              : "Customer Dashboard"}
+            Screenshot Reader
           </h2>
         </div>
         {/* Main Card */}
         <div className="bg-white rounded-b-xl shadow-lg flex flex-col">
           <div className="p-4 md:p-6 flex-1 flex flex-col">
-            <h1 className="text-xl md:text-2xl font-bold text-[#00B3CC] mb-2 text-center">
-              Classic Wines Florida - Invoice Creator
-            </h1>
-
             {!poData && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 md:gap-6">

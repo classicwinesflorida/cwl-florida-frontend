@@ -201,11 +201,11 @@ export default function PerformanceHeader() {
                   src="/cwl-logo.svg"
                   alt="Tech Sierra Logo"
                   width={150}
-                  height={100}
+                  height={70}
                   priority
+                  // style={{ backgroundColor: "black", borderRadius: "8px" }}
                 />
               </div>
-              <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="w-8 h-8 rounded-full bg-[#06A9CA]"></div>
@@ -244,9 +244,9 @@ export default function PerformanceHeader() {
                   width={150}
                   height={100}
                   priority
+                  // style={{ backgroundColor: "black", borderRadius: "8px" }}
                 />
               </div>
-              <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
             </div>
 
             {/* User Profile Dropdown */}

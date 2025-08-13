@@ -15,7 +15,9 @@ export default function Breadcrumb() {
   const pathname = usePathname();
 
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
-    const pathSegments = pathname.split("/").filter((segment) => segment !== "");
+    const pathSegments = pathname
+      .split("/")
+      .filter((segment) => segment !== "");
     const breadcrumbs: BreadcrumbItem[] = [
       {
         label: "Home",
@@ -28,10 +30,10 @@ export default function Breadcrumb() {
       pages: "",
       "ai-page": "AI Tools",
       "order-manually": "Manual Booking",
-      "po-sms-text": "SMS Text Processing",
-      "po-sms-screenshot": "SMS Screenshot Processing",
-      "upload-pdf": "PDF Upload",
-      "upload-voice": "Voice Upload",
+      "po-sms-text": "Text Message Reader",
+      "po-sms-screenshot": "Screenshot Reader",
+      "upload-pdf": "PDF Reader",
+      "upload-voice": "Audio Reader",
     };
 
     const excludedPages = ["pages", "ai-page", "order-manually"];
