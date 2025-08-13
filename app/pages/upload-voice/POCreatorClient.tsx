@@ -11,7 +11,7 @@ import {
   X,
   AlertTriangle,
   Volume2,
-  Lightbulb
+  Lightbulb,
 } from "lucide-react";
 import CustomDropdown from "@/components/CustomDropdown";
 import { useSearchParams } from "next/navigation";
@@ -97,8 +97,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 function toTitleCase(str: string): string {
   if (!str) return "";
-  return str.replace(/\w\S*/g, (txt: string) =>
-    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  return str.replace(
+    /\w\S*/g,
+    (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
   );
 }
 
@@ -199,14 +200,18 @@ export default function POCreatorClient() {
       setIsRecording(true);
     } catch (error) {
       console.error("Recording error:", error);
-      alert("Could not start recording. Please ensure microphone access is granted.");
+      alert(
+        "Could not start recording. Please ensure microphone access is granted."
+      );
     }
   };
 
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
+      mediaRecorderRef.current.stream
+        .getTracks()
+        .forEach((track) => track.stop());
       setIsRecording(false);
     }
   };
@@ -219,30 +224,32 @@ export default function POCreatorClient() {
 
   // --- Process Voice Data ---
   const processVoiceData = async () => {
-   if (!audioFile && !inputText.trim()) {
-    setErrorMessage("Please either record/upload voice or enter text");
-    setShowErrorModal(true);
-    return;
-  }
-  setIsProcessing(true);
-  try {
-    const formData = new FormData();
-    if (audioFile) {
-      formData.append("audio", audioFile);
-    } else {
-      formData.append("text", inputText);
-    }
-    const response = await fetch(`${API_BASE_URL}/api/voice`, {
-      method: "POST",
-      mode: "cors",
-      body: formData,
-    });
-    if (!response.ok) {
-      const errorText = await response.text();
-      setErrorMessage(`Failed to process voice data: ${response.status} - ${errorText}`);
+    if (!audioFile && !inputText.trim()) {
+      setErrorMessage("Please either record/upload voice or enter text");
       setShowErrorModal(true);
       return;
     }
+    setIsProcessing(true);
+    try {
+      const formData = new FormData();
+      if (audioFile) {
+        formData.append("audio", audioFile);
+      } else {
+        formData.append("text", inputText);
+      }
+      const response = await fetch(`${API_BASE_URL}/api/voice`, {
+        method: "POST",
+        mode: "cors",
+        body: formData,
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        setErrorMessage(
+          `Failed to process voice data: ${response.status} - ${errorText}`
+        );
+        setShowErrorModal(true);
+        return;
+      }
       const data: ApiResponse = await response.json();
 
       // Map the API response to our POData structure
@@ -446,7 +453,9 @@ export default function POCreatorClient() {
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center">
               <AlertTriangle className="text-red-500 mr-3" size={24} />
-              <h3 className="text-lg font-semibold text-red-600">Processing Error</h3>
+              <h3 className="text-lg font-semibold text-red-600">
+                Processing Error
+              </h3>
             </div>
             <button
               onClick={() => setShowErrorModal(false)}
@@ -455,7 +464,7 @@ export default function POCreatorClient() {
               <X size={24} />
             </button>
           </div>
-          
+
           <div className="mb-6">
             <p className="text-red-600 mb-4">{errorMessage}</p>
           </div>
@@ -463,31 +472,53 @@ export default function POCreatorClient() {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
             <div className="flex items-center mb-3">
               <Lightbulb className="text-blue-500 mr-2" size={20} />
-              <h4 className="font-semibold text-blue-700">Audio Recording Tips</h4>
+              <h4 className="font-semibold text-blue-700">
+                Audio Recording Tips
+              </h4>
             </div>
             <p className="text-blue-700 text-sm mb-3">
-              For best results, please include the following information in your audio:
+              For best results, please include the following information in your
+              audio:
             </p>
             <ul className="text-blue-700 text-sm space-y-2">
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span><strong>Customer name:</strong> "Create purchase order for [Customer Name]"</span>
+                <span>
+                  <strong>Customer name:</strong>{" "}
+                  {`"Create purchase order for [Customer Name]"`}
+                </span>
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span><strong>Items needed:</strong> "I need 10 bottles of Chardonnay and 5 cases of Cabernet"</span>
+                <span>
+                  <strong>Items needed:</strong>{" "}
+                  {`"I need 10 bottles of
+                  Chardonnay and 5 cases of Cabernet"`}
+                </span>
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span><strong>Quantities:</strong> Specify exact numbers for each item</span>
+                <span>
+                  <strong>Quantities:</strong>{" "}
+                  {`Specify exact numbers for each
+                  item`}
+                </span>
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span><strong>Unit prices:</strong> Include prices if known "at $25 per bottle"</span>
+                <span>
+                  <strong>Unit prices:</strong>{" "}
+                  {`Include prices if known "at $25
+                  per bottle"`}
+                </span>
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span><strong>Order date:</strong> "Needed by [date]" or "For delivery on [date]"</span>
+                <span>
+                  <strong>Order date:</strong>{" "}
+                  {`"Needed by [date]" or "For
+                  delivery on [date]"`}
+                </span>
               </li>
             </ul>
           </div>
@@ -496,12 +527,15 @@ export default function POCreatorClient() {
             <div className="flex items-start">
               <Volume2 className="text-green-500 mr-2 mt-0.5" size={18} />
               <div>
-                <h4 className="font-semibold text-green-700 mb-2">Example Audio Script:</h4>
+                <h4 className="font-semibold text-green-700 mb-2">
+                  Example Audio Script:
+                </h4>
                 <p className="text-green-700 text-sm italic">
-                  "Hi, I need to create a purchase order for ABC Wine Store. 
-                  I need 12 bottles of 2020 Cabernet Sauvignon at $30 each, 
-                  6 bottles of Pinot Noir at $25 each, and 24 bottles of house Chardonnay at $18 each. 
-                  This order is for delivery next Friday."
+                  {`"Hi, I need to create a purchase order for ABC Wine Store. I
+                  need 12 bottles of 2020 Cabernet Sauvignon at $30 each, 6
+                  bottles of Pinot Noir at $25 each, and 24 bottles of house
+                  Chardonnay at $18 each. This order is for delivery next
+                  Friday."`}
                 </p>
               </div>
             </div>
@@ -531,9 +565,7 @@ export default function POCreatorClient() {
 
   // --- Top Bar Customer Name Logic ---
   const customerName =
-    poData?.customerName ||
-    poData?.customerDetails?.name ||
-    userName;
+    poData?.customerName || poData?.customerDetails?.name || userName;
 
   return (
     <div className="min-h-[75vh] bg-[#F6F7FA] flex flex-col items-center justify-center my-4">
@@ -573,9 +605,7 @@ export default function POCreatorClient() {
                           <div className="text-[#00B3CC] mb-4">
                             Drag and drop your audio file here
                           </div>
-                          <div className="text-[#00B3CC] text-sm mb-4">
-                            or
-                          </div>
+                          <div className="text-[#00B3CC] text-sm mb-4">or</div>
                           <div className="flex flex-col items-center space-y-4">
                             <label
                               htmlFor="file-upload"
@@ -584,7 +614,9 @@ export default function POCreatorClient() {
                               Select Audio File
                             </label>
                             <button
-                              onClick={isRecording ? stopRecording : startRecording}
+                              onClick={
+                                isRecording ? stopRecording : startRecording
+                              }
                               className={`flex items-center justify-center px-4 py-2 rounded-lg font-medium relative ${
                                 isRecording
                                   ? "bg-[#EF4444] hover:bg-[#dc2626] text-white"
@@ -728,8 +760,8 @@ export default function POCreatorClient() {
                                   email: option.customer.email || "",
                                   address: option.customer.billing_address
                                     ? `${
-                                        option.customer.billing_address.address ||
-                                        ""
+                                        option.customer.billing_address
+                                          .address || ""
                                       }, ${
                                         option.customer.billing_address.city ||
                                         ""
@@ -750,7 +782,8 @@ export default function POCreatorClient() {
                         )
                       ) : (
                         <p className="text-[#00B3CC] text-sm md:text-base">
-                          {poData.customerDetails.name || "No customer selected"}
+                          {poData.customerDetails.name ||
+                            "No customer selected"}
                         </p>
                       )}
                     </div>
