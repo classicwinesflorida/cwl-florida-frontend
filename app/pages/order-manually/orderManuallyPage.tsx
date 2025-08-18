@@ -26,7 +26,7 @@ export default function ManualBookingPage() {
       formUrl:
         "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/form-perma/New_Customer/qqv36f0qOkwQNkDEA7d1DUjP4B8MTQjsBODXH5Vq2FB2GwN32OPGP6vJyuay0CHAsy35WFEN3B1Q5DsB39dJJ5PfGAXp3e660dU5",
       listUrl:
-        "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/report-perma/All_New_Customer/G0H3YXmk0wMnRD8Jg1eVrQybjtHNXUCpYQVEjkuxe95OtXnyqCAtQr8TYX2OWVErHnTXffbW9eWwHr1hSwMQMMrabrCKZh0Rt0Ed",
+        "https://books.zoho.com/app/889334426#/contacts?filter_by=Status.All&per_page=200&sort_column=customer_name&sort_order=A",
     },
     {
       id: "vendor",
@@ -37,7 +37,7 @@ export default function ManualBookingPage() {
       formUrl:
         "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/form-perma/Vendor/6dUAJQuqwA9Js4ym5YGGsjYDdgnzazZre1pa6gFMnqRXQ7Okb3DVX30mMuEJtrP85dQE4twyq3waNW9qDnb0aEYPnWP4mk5Pjmaa",
       listUrl:
-        "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/report-perma/All_Vendors/nYKayS53a9nCR0pEfhZXDeOZmtpS84FusYQSvJk4UPEnmCgWExs8JkvwqgYg8RRmdrway3qBhFMvJRCWxtMXeBxKuTFPTEJmqrPH",
+        "https://books.zoho.com/app/889334426#/vendors?filter_by=Status.Active&per_page=25&sort_column=created_time&sort_order=D",
     },
     {
       id: "item",
@@ -48,7 +48,7 @@ export default function ManualBookingPage() {
       formUrl:
         "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/form-perma/Item/byYgX6uGZCSgnFuaU3Zh6Dd1JyrVE675XwsC3EzubA6u3AgqwV4jrpWFF5wHwg9MQPWRwt2OZHsGMpwvw5kzTybgB7RpOyaWhOjS",
       listUrl:
-        "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/report-perma/Items_List/9Sbu3ZParrmbXEEVUM1jQmDeWtGnHseq3dzpu6GvQGuhNMwrySx5h5HmsqmJGW4U4wwHNgJ456PgGX2SuBy3QT03v9Ta4XtwsqWD",
+        "https://books.zoho.com/app/889334426#/inventory/items?filter_by=Status.Active&per_page=200&sort_column=created_time&sort_order=D",
     },
     {
       id: "invoice",
@@ -59,7 +59,7 @@ export default function ManualBookingPage() {
       formUrl:
         "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/form-perma/Invoice/j9NyBVMbzAGyyWCbAG6NG00JGBNAJ0PXu9AsDDzWCuVez6ysJrCgphNXDvCJKaayhdhPeyH3XdCOKntqMeJgBAwSFBUahEBWqBnq",
       listUrl:
-        "https://creatorapp.zohopublic.com/gilberto_classicwines/customer-onboarding/report-perma/All_Invoices/5qQRYzHfR6f4vDGARZTgFj1pb3pN73GuHOaEt2jCAq24EtO9PsZv1rTe0jMmUkYVs3krYGKKHdpYzFzFmmfwm0WaCqXDyssuwHez",
+        "https://books.zoho.com/app/889334426#/invoices?filter_by=Status.All&per_page=200&sort_column=date&sort_order=D",
     },
   ];
 

@@ -395,7 +395,8 @@ export default function POCreatorClient() {
   };
 
   const finalizePO = async () => {
-    if (!poData) return;
+    if (!poData || isProcessing) return;
+
     try {
       setIsProcessing(true);
       const poDataWithReference = {
@@ -403,6 +404,7 @@ export default function POCreatorClient() {
         notes: `PO Reference: ${poData.id}`,
         date: new Date().toISOString().split("T")[0],
       };
+
       const response = await fetch(`${API_BASE_URL}/api/finalize-po`, {
         method: "POST",
         mode: "cors",
@@ -411,10 +413,12 @@ export default function POCreatorClient() {
         },
         body: JSON.stringify(poDataWithReference),
       });
+
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || "Failed to finalize PO");
       }
+
       setPOData({ ...poData, status: "sent" });
       alert("PO sent successfully to Zoho Books!");
     } catch (error) {
@@ -427,6 +431,7 @@ export default function POCreatorClient() {
       setIsProcessing(false);
     }
   };
+
 
   const resetForm = () => {
     setInputText("");
@@ -604,11 +609,10 @@ export default function POCreatorClient() {
                               onClick={
                                 isRecording ? stopRecording : startRecording
                               }
-                              className={`flex items-center justify-center px-4 py-2 rounded-lg font-medium relative ${
-                                isRecording
+                              className={`flex items-center justify-center px-4 py-2 rounded-lg font-medium relative ${isRecording
                                   ? "bg-[#EF4444] hover:bg-[#dc2626] text-white"
                                   : "bg-[#00B3CC] hover:bg-[#0090A3] text-white"
-                              }`}
+                                }`}
                             >
                               {isRecording ? (
                                 <>
@@ -743,19 +747,15 @@ export default function POCreatorClient() {
                                     "",
                                   email: option.customer.email || "",
                                   address: option.customer.billing_address
-                                    ? `${
-                                        option.customer.billing_address
-                                          .address || ""
-                                      }, ${
-                                        option.customer.billing_address.city ||
-                                        ""
-                                      }, ${
-                                        option.customer.billing_address.state ||
-                                        ""
-                                      } ${
-                                        option.customer.billing_address.zip ||
-                                        ""
-                                      }`
+                                    ? `${option.customer.billing_address
+                                      .address || ""
+                                    }, ${option.customer.billing_address.city ||
+                                    ""
+                                    }, ${option.customer.billing_address.state ||
+                                    ""
+                                    } ${option.customer.billing_address.zip ||
+                                    ""
+                                    }`
                                     : "",
                                 });
                               }
@@ -923,11 +923,20 @@ export default function POCreatorClient() {
                     ) : (
                       <button
                         onClick={finalizePO}
-                        className="flex items-center justify-center px-4 md:px-6 py-2.5 md:py-3 bg-[#00B3CC] text-white rounded-lg hover:bg-[#0090A3] font-semibold text-sm md:text-base w-full md:w-auto"
+                        disabled={isProcessing}
+                        className="flex items-center justify-center px-4 md:px-6 py-2.5 md:py-3 
+             bg-[#00B3CC] text-white rounded-lg 
+             hover:bg-[#00B3CC]/90 font-semibold text-sm md:text-base 
+             w-full md:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
                       >
-                        <Send className="mr-2" size={18} />
-                        Finalize & Send PO
+                        {isProcessing ? "Sending..." : (
+                          <>
+                            <Send className="mr-2" size={18} />
+                            Finalize & Send PO
+                          </>
+                        )}
                       </button>
+
                     )}
                   </div>
                 </div>
