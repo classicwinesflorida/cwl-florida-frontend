@@ -227,7 +227,7 @@ const ZohoReportGenerator: React.FC = () => {
     switch (reportProgress.status) {
       case "started":
       case "processing":
-        return <RefreshCw className="w-5 h-5 text-blue-500 animate-spin" />;
+        return <RefreshCw className="w-5 h-5 text-[#06A9CA] animate-spin" />;
       case "completed":
         return <CheckCircle className="w-5 h-5 text-green-500" />;
       case "error":
@@ -259,7 +259,7 @@ const ZohoReportGenerator: React.FC = () => {
       <div className="max-w-5xl mx-auto px-4">
         <div className="bg-white rounded-xl shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+          <div className="bg-[#06A9CA] px-8 py-6">
             <div className="flex items-center gap-3">
               <BarChart3 className="w-8 h-8 text-white" />
               <h1 className="text-3xl font-bold text-white">
@@ -284,7 +284,7 @@ const ZohoReportGenerator: React.FC = () => {
                     type="date"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 "
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06A9CA] focus:border-transparent transition-all duration-200 text-gray-900 "
                     disabled={isGenerating}
                   />
                 </div>
@@ -297,7 +297,7 @@ const ZohoReportGenerator: React.FC = () => {
                     type="date"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06A9CA] focus:border-transparent transition-all duration-200 text-gray-900"
                     disabled={isGenerating}
                   />
                 </div>
@@ -312,7 +312,7 @@ const ZohoReportGenerator: React.FC = () => {
                   onChange={(e) =>
                     setOutputFormat(e.target.value as "json" | "csv" | "both")
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#06A9CA] focus:border-transparent transition-all duration-200"
                   disabled={isGenerating}
                 >
                   <option value="csv">CSV Format</option>
@@ -323,7 +323,7 @@ const ZohoReportGenerator: React.FC = () => {
                 <button
                   onClick={handleGenerateReport}
                   disabled={isGenerating}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                  className="flex-1 bg-gradient-to-r from-[#14c5e9] to-[#06A9CA] hover:bg-[#16c6e9] disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
                 >
                   <FileText className="w-5 h-5" />
                   {isGenerating ? "Generating Report..." : "Generate Report"}
@@ -375,7 +375,7 @@ const ZohoReportGenerator: React.FC = () => {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
-                        className="bg-gradient-to-r from-blue-500 to-indigo-500 h-3 rounded-full transition-all duration-500 ease-out"
+                        className="bg-gradient-to-r from-[#06A9CA] to-indigo-500 h-3 rounded-full transition-all duration-500 ease-out"
                         style={{ width: `${reportProgress.progress}%` }}
                       ></div>
                     </div>
@@ -469,12 +469,12 @@ const ZohoReportGenerator: React.FC = () => {
             {/* Download Section */}
             {reportProgress?.status === "completed" && (
               <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                <h3 className="text-xl font-semibold text-blue-800 mb-4 flex items-center gap-2">
+                <h3 className="text-xl font-semibold text-[#06A9CA] mb-4 flex items-center gap-2">
                   <Download className="w-6 h-6" />
                   Download Your Report
                 </h3>
 
-                <p className="text-blue-700 mb-6">
+                <p className="text-[#06A9CA] mb-6">
                   Your report has been generated successfully.
                 </p>
 
@@ -489,7 +489,7 @@ const ZohoReportGenerator: React.FC = () => {
                 </div>
 
                 {/* {reportProgress.data && (
-                  <p className="text-sm text-blue-600 mt-4">
+                  <p className="text-sm text-[#06A9CA] mt-4">
                     Report contains{" "}
                     {reportProgress.data.length.toLocaleString()} transaction
                     records

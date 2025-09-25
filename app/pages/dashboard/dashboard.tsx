@@ -6,6 +6,7 @@ import {
   PlusCircle,
   Bot,
   Loader2,
+  BarChart,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -68,13 +69,19 @@ export default function Dashboard() {
         url: "/pages/ai-page",
         type: "internal",
       },
+      {
+        title: "Generate Reports",
+        description: "Generate comprehensive reports",
+        icon: <BarChart className="w-20 h-20 text-[#3949ab]" />,
+        url: "/pages/reports",
+        type: "internal",
+      },
     ],
     []
   );
 
   const handleCardClick = useCallback(
     async (item: MenuItem): Promise<void> => {
-
       if (item.type === "external") {
         window.open(item.url, "_blank", "noopener,noreferrer");
       } else if (item.type === "internal") {
