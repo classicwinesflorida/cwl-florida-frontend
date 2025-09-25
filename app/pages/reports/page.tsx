@@ -13,8 +13,6 @@ import {
 interface ReportProgress {
   status: "started" | "processing" | "completed" | "error";
   progress: number;
-  processed?: number;
-  total?: number;
   message: string;
   data?: any[];
   summary?: {
@@ -23,19 +21,18 @@ interface ReportProgress {
     unique_customers: number;
     unique_products: number;
     date_range: {
-      from: string;
-      to: string;
+      from: string | null;
+      to: string | null;
     };
   };
+  csvData?: string;
   error?: string;
 }
 
 const ZohoReportGenerator: React.FC = () => {
   const [dateFrom, setDateFrom] = useState("2023-01-01");
   const [dateTo, setDateTo] = useState("2023-12-31");
-  const [outputFormat, setOutputFormat] = useState<"json" | "csv" | "both">(
-    "json"
-  );
+  const [outputFormat, setOutputFormat] = useState<"csv">("csv");
   const [isGenerating, setIsGenerating] = useState(false);
   const [requestId, setRequestId] = useState<string | null>(null);
   const [reportProgress, setReportProgress] = useState<ReportProgress | null>(
@@ -45,7 +42,95 @@ const ZohoReportGenerator: React.FC = () => {
 
   const API_BASE_URL = "http://localhost:8080/api";
 
-  const generateReport = async () => {
+  // Utility function to trigger file download
+  const triggerDownload = (
+    content: string,
+    filename: string,
+    contentType: string
+  ) => {
+    const blob = new Blob([content], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const handleStartProgressPolling = (id: string) => {
+    startProgressPolling(id, API_BASE_URL, setReportProgress, setIsGenerating);
+  };
+
+  const handleGenerateReport = async () => {
+    await generateReport(
+      dateFrom,
+      dateTo,
+      outputFormat,
+      API_BASE_URL,
+      setIsGenerating,
+      setError,
+      setReportProgress,
+      setRequestId,
+      handleStartProgressPolling
+    );
+  };
+
+  const handleDownloadReport = async () => {
+    await downloadReport("csv", reportProgress);
+  };
+
+  const downloadReport = async (
+    format: "csv",
+    reportProgress: ReportProgress | null
+  ) => {
+    console.log("downloadReport called with format:", format);
+
+    if (!reportProgress) {
+      console.error("No report progress data available");
+      return;
+    }
+
+    if (reportProgress.status !== "completed") {
+      console.error("Report is not completed yet");
+      return;
+    }
+
+    try {
+      if (format === "csv") {
+        if (reportProgress.csvData) {
+          // Generate filename with timestamp
+          const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+          const filename = `zoho_transaction_report_${timestamp}.csv`;
+
+          // Trigger download
+          triggerDownload(
+            reportProgress.csvData,
+            filename,
+            "text/csv;charset=utf-8;"
+          );
+          console.log("CSV file downloaded successfully");
+        } else {
+          console.error("CSV data not available in report progress");
+        }
+      }
+    } catch (error) {
+      console.error("Error downloading report:", error);
+    }
+  };
+
+  const generateReport = async (
+    dateFrom: string,
+    dateTo: string,
+    outputFormat: string,
+    API_BASE_URL: string,
+    setIsGenerating: (loading: boolean) => void,
+    setError: (error: string | null) => void,
+    setReportProgress: (progress: ReportProgress | null) => void,
+    setRequestId: (id: string) => void,
+    startProgressPolling: (id: string) => void
+  ) => {
     try {
       setIsGenerating(true);
       setError(null);
@@ -80,58 +165,53 @@ const ZohoReportGenerator: React.FC = () => {
     }
   };
 
-  const startProgressPolling = (reqId: string) => {
+  // Enhanced progress polling function to handle the updated response
+  const startProgressPolling = (
+    requestId: string,
+    API_BASE_URL: string,
+    setReportProgress: (progress: ReportProgress | null) => void,
+    setIsGenerating: (loading: boolean) => void
+  ) => {
     const pollInterval = setInterval(async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/report-progress/${reqId}`
+          `${API_BASE_URL}/report-progress/${requestId}`
         );
         const data = await response.json();
 
         if (data.success) {
-          setReportProgress(data);
+          const progress: ReportProgress = {
+            status: data.status,
+            progress: data.progress,
+            message: data.message,
+            data: data.data,
+            summary: data.summary,
+            csvData: data.csvData, // Include CSV data from response
+            error: data.error,
+          };
+
+          setReportProgress(progress);
 
           if (data.status === "completed" || data.status === "error") {
             clearInterval(pollInterval);
             setIsGenerating(false);
           }
+        } else {
+          console.error("Error polling progress:", data.error);
+          clearInterval(pollInterval);
+          setIsGenerating(false);
         }
-      } catch (err) {
-        console.error("Error checking progress:", err);
+      } catch (error) {
+        console.error("Error polling progress:", error);
         clearInterval(pollInterval);
-        setError("Failed to check report progress");
         setIsGenerating(false);
       }
-    }, 2000);
-  };
+    }, 2000); // Poll every 2 seconds
 
-  const downloadReport = async (format: "json" | "csv") => {
-    if (!requestId) return;
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/download-report/${requestId}?format=${format}`
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to download report");
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `zoho_transaction_report_${
-        new Date().toISOString().split("T")[0]
-      }.${format}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Error downloading report:", err);
-      setError("Failed to download report");
-    }
+    // Clean up interval after 5 minutes to prevent memory leaks
+    setTimeout(() => {
+      clearInterval(pollInterval);
+    }, 5 * 60 * 1000);
   };
 
   const resetForm = () => {
@@ -204,7 +284,7 @@ const ZohoReportGenerator: React.FC = () => {
                     type="date"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 "
                     disabled={isGenerating}
                   />
                 </div>
@@ -217,13 +297,13 @@ const ZohoReportGenerator: React.FC = () => {
                     type="date"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900"
                     disabled={isGenerating}
                   />
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Output Format
                 </label>
@@ -235,15 +315,13 @@ const ZohoReportGenerator: React.FC = () => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   disabled={isGenerating}
                 >
-                  <option value="json">JSON Format</option>
                   <option value="csv">CSV Format</option>
-                  <option value="both">Both Formats</option>
                 </select>
-              </div>
+              </div> */}
 
               <div className="flex gap-4">
                 <button
-                  onClick={generateReport}
+                  onClick={handleGenerateReport}
                   disabled={isGenerating}
                   className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
                 >
@@ -336,14 +414,14 @@ const ZohoReportGenerator: React.FC = () => {
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                  <div className="bg-white rounded-lg p-5 shadow-sm border border-green-100">
+                  {/* <div className="bg-white rounded-lg p-5 shadow-sm border border-green-100">
                     <p className="text-sm font-medium text-gray-600 mb-1">
                       Total Transactions
                     </p>
                     <p className="text-3xl font-bold text-gray-900">
                       {reportProgress.summary.total_transactions.toLocaleString()}
                     </p>
-                  </div>
+                  </div> */}
 
                   <div className="bg-white rounded-lg p-5 shadow-sm border border-green-100">
                     <p className="text-sm font-medium text-gray-600 mb-1">
@@ -356,7 +434,7 @@ const ZohoReportGenerator: React.FC = () => {
 
                   <div className="bg-white rounded-lg p-5 shadow-sm border border-green-100">
                     <p className="text-sm font-medium text-gray-600 mb-1">
-                      Unique Customers
+                      Customers
                     </p>
                     <p className="text-3xl font-bold text-gray-900">
                       {reportProgress.summary.unique_customers.toLocaleString()}
@@ -397,21 +475,12 @@ const ZohoReportGenerator: React.FC = () => {
                 </h3>
 
                 <p className="text-blue-700 mb-6">
-                  Your report has been generated successfully. Choose your
-                  preferred format to download.
+                  Your report has been generated successfully.
                 </p>
 
                 <div className="flex flex-wrap gap-4">
                   <button
-                    onClick={() => downloadReport("json")}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download JSON
-                  </button>
-
-                  <button
-                    onClick={() => downloadReport("csv")}
+                    onClick={handleDownloadReport}
                     className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
                   >
                     <Download className="w-4 h-4" />
@@ -419,13 +488,13 @@ const ZohoReportGenerator: React.FC = () => {
                   </button>
                 </div>
 
-                {reportProgress.data && (
+                {/* {reportProgress.data && (
                   <p className="text-sm text-blue-600 mt-4">
                     Report contains{" "}
                     {reportProgress.data.length.toLocaleString()} transaction
                     records
                   </p>
-                )}
+                )} */}
               </div>
             )}
           </div>
@@ -433,10 +502,7 @@ const ZohoReportGenerator: React.FC = () => {
 
         {/* Footer */}
         <div className="text-center mt-8 text-gray-600">
-          <p className="text-sm">
-            Powered by Zoho Books API • Generate comprehensive transaction
-            reports with ease
-          </p>
+          <p className="text-sm">Powered by Tech Sierra</p>
         </div>
       </div>
     </div>
