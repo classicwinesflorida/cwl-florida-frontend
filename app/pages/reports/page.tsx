@@ -14,7 +14,7 @@ interface ReportProgress {
   status: "started" | "processing" | "completed" | "error";
   progress: number;
   message: string;
-  data?: any[];
+  data?: unknown[];
   summary?: {
     total_transactions: number;
     total_amount: number;
@@ -27,20 +27,24 @@ interface ReportProgress {
   };
   csvData?: string;
   error?: string;
+  processed?: number;
+  total?: number;
 }
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
 const ZohoReportGenerator: React.FC = () => {
   const [dateFrom, setDateFrom] = useState("2023-01-01");
   const [dateTo, setDateTo] = useState("2023-12-31");
-  const [outputFormat, setOutputFormat] = useState<"csv">("csv");
+  // const [outputFormat, setOutputFormat] = useState<"csv">("csv");
+  const [outputFormat] = useState<"csv">("csv");
   const [isGenerating, setIsGenerating] = useState(false);
   const [requestId, setRequestId] = useState<string | null>(null);
   const [reportProgress, setReportProgress] = useState<ReportProgress | null>(
     null
   );
   const [error, setError] = useState<string | null>(null);
-
-  const API_BASE_URL = "http://localhost:8080/api";
 
   // Utility function to trigger file download
   const triggerDownload = (
@@ -136,7 +140,7 @@ const ZohoReportGenerator: React.FC = () => {
       setError(null);
       setReportProgress(null);
 
-      const response = await fetch(`${API_BASE_URL}/generate-report`, {
+      const response = await fetch(`${API_BASE_URL}/api/generate-report`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,6 +158,7 @@ const ZohoReportGenerator: React.FC = () => {
         setRequestId(data.requestId);
         startProgressPolling(data.requestId);
       } else {
+        console.log("Error response from requestId:", requestId);
         throw new Error(data.error || "Failed to start report generation");
       }
     } catch (err) {
@@ -175,7 +180,7 @@ const ZohoReportGenerator: React.FC = () => {
     const pollInterval = setInterval(async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/report-progress/${requestId}`
+          `${API_BASE_URL}/api/report-progress/${requestId}`
         );
         const data = await response.json();
 
@@ -379,16 +384,16 @@ const ZohoReportGenerator: React.FC = () => {
                         style={{ width: `${reportProgress.progress}%` }}
                       ></div>
                     </div>
-                    {reportProgress.processed !== undefined &&
-                      reportProgress.total !== undefined && (
+                    {reportProgress?.processed !== undefined &&
+                      reportProgress?.total !== undefined && (
                         <p className="text-sm text-gray-600 mt-3">
                           Processed{" "}
                           <span className="font-semibold">
-                            {reportProgress.processed}
+                            {reportProgress?.processed}
                           </span>{" "}
                           of{" "}
                           <span className="font-semibold">
-                            {reportProgress.total}
+                            {reportProgress?.total}
                           </span>{" "}
                           invoices
                         </p>
