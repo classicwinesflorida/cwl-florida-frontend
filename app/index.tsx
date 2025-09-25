@@ -113,7 +113,7 @@ export default function Homepage() {
       <div className="bg-white pt-10 pl-10 pr-10 pb-2 rounded-xl shadow-2xl w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
-          <p>Sign in to your Classic Wines account</p>
+          <p>Sign in to your Classic Wines Florida account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>

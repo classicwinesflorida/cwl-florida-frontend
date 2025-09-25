@@ -312,42 +312,31 @@ export default function POCreatorClient() {
   };
 
   const finalizePO = async () => {
-    if (!poData) return;
+    if (!poData || isProcessing) return;
 
     try {
       setIsProcessing(true);
-
-      // Add PO reference to notes instead of custom field
       const poDataWithReference = {
         ...poData,
-        notes: `PO Reference: ${poData.id}`, // Add PO reference as a note
-        date: new Date().toISOString().split("T")[0], // Ensure date is in YYYY-MM-DD format
+        notes: `PO Reference: ${poData.id}`,
+        date: new Date().toISOString().split("T")[0],
       };
 
       const response = await fetch(`${API_BASE_URL}/api/finalize-po`, {
         method: "POST",
         mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(poDataWithReference),
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to finalize PO");
-      }
+      if (!response.ok) throw new Error(data.error || "Failed to finalize PO");
 
       setPOData({ ...poData, status: "sent" });
       alert("PO sent successfully to Zoho Books!");
     } catch (error) {
       console.error("Error finalizing PO:", error);
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Error sending PO to Zoho Books"
-      );
+      alert(error instanceof Error ? error.message : "Error sending PO to Zoho Books");
     } finally {
       setIsProcessing(false);
     }
@@ -780,10 +769,18 @@ export default function POCreatorClient() {
                     ) : (
                       <button
                         onClick={finalizePO}
-                        className="flex items-center justify-center px-4 md:px-6 py-2.5 md:py-3 bg-[#00B3CC] text-white rounded-lg hover:bg-[#009bb0] font-semibold text-sm md:text-base w-full md:w-auto"
+                        disabled={isProcessing}
+                        className="flex items-center justify-center px-4 md:px-6 py-2.5 md:py-3 
+             bg-[#00B3CC] text-white rounded-lg 
+             hover:bg-[#00B3CC]/90 font-semibold text-sm md:text-base 
+             w-full md:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
                       >
-                        <Send className="mr-2" size={18} />
-                        Finalize & Send PO
+                        {isProcessing ? "Sending..." : (
+                          <>
+                            <Send className="mr-2" size={18} />
+                            Finalize & Send PO
+                          </>
+                        )}
                       </button>
                     )}
                   </div>
